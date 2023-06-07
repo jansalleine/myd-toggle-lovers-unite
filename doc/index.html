@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MYD Fun Framework</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #444;
+        color: #000;
+        font-size: 16px;
+        font-family: monospace;
+        margin: 0;
+      }
+      h1 {
+          font-size: 26px;
+      }
+      h2 {
+          font-size: 24px;
+      }
+      h3 {
+          font-size: 20px;
+      }
+      h4 {
+          font-size: 18px;
+      }
+      h5 {
+          font-size: 17px;
+      }
+      h6 {
+          font-size: 16px;
+      }
+      a {
+        color: #a00;
+      }
+      a:hover, a:focus {
+        color: #d44;
+        text-decoration: none;
+      }
+      a.to-top {
+        display: block;
+        text-align: right;
+      }
+      ul {
+        padding-left: 18px;
+      }
+      ol {
+        padding-left: 36px;
+      }
+      p.warning {
+        background-color: #fff;
+        color: #f00;
+        font-size: 24px;
+        padding: 15px 30px;
+        border-radius: 25px;
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        border-top: 1px dotted #111;
+        border-left: 1px dotted #111;
+        background-color: #fff;
+        margin-bottom: 15px;
+      }
+      @media ( max-width: 820px ) {
+        .table {
+          overflow: auto;
+        }
+      }
+      th, td {
+        border-right: 1px dotted #111;
+        border-bottom: 1px dotted #111;
+        vertical-align: top;
+        padding: 8px;
+        text-align: left;
+      }
+      pre {
+        background-color: #fff;
+        padding: 15px 30px;
+        border-radius: 25px;
+        border-right: 1px dotted #111;
+        border-bottom: 1px dotted #111;
+      }
+      @media ( max-width: 820px ) {
+        pre {
+          overflow-x: scroll;
+        }
+      }
+      #wrap {
+        background-color: #eee;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0px 30px 60px;
+      }
+      @media ( min-width: 1204px ) {
+        #wrap {
+          border-right: 4px solid #111;
+          border-bottom: 4px solid #111;
+        }
+      }
+      #header {
+          padding: 60px 0px;
+          margin-left: -30px;
+          margin-right: -30px;
+          background-color: #fff;
+          background-image: url(data:image/png;base64,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);
+        background-repeat: no-repeat;
+        background-position: top 30px right 5px;
+        border-bottom: 2px solid #111;
+      }
+      #header h1 {
+        padding-left: 30px;
+      }
+      @media ( max-width: 989px ) {
+        #header {
+          background-image: none;
+        }
+      }
+      div.section {
+        border-bottom: 2px dotted #111;
+        padding-bottom: 30px;
+        margin-bottom: 60px;
+      }
+    </style>
+  </head>
+  <body id="top">
+    <div id="wrap">
+      <div id="header">
+        <h1>MYD Fun Framework</h1>
+      </div>
+      <div id="index" class="section">
+        <h2>Index</h2>
+        <ul>
+          <li><a href="#introduction">1. Introduction</a></li>
+          <li><a href="#prerequisities">2. Prerequisities</a>
+            <ul>
+              <li><a href="#prerequisities-demo">2.1 Buildchain</a>
+                <ul>
+                  <li><a href="#prerequisities-demo-linux">2.1.1 Setup Buildchain on Linux</a></li>
+                  <li><a href="#prerequisities-demo-windows">2.1.2 Setup Buildchain on Windows</a></li>
+                  <li><a href="#prerequisities-demo-macos">2.1.3 Setup Buildchain on MacOS</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><a href="#setup-git">3. Setup GIT</a></li>
+          <li><a href="#coding-guidelines">4. Coding Guidelines</a>
+            <ul>
+              <li><a href="#coding-rules-1">4.1 The Most Important Rule</a></li>
+              <li><a href="#coding-rules-2">4.2 VIC Bank Switching</a></li>
+              <li><a href="#coding-rules-3">4.3 Random Numbers</a>
+                <ul>
+                  <li><a href="#coding-rules-31">4.3.1 Pseudo-RNG utilizing the stack</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><a href="#tables">5. Overview Tables</a>
+            <ul>
+              <li><a href="#memory-layout">5.1 Framework Memory Layout</a></li>
+              <li><a href="#registers">5.2 Important Framework Registers</a></li>
+              <li><a href="#routines">5.3 Important Framework Routines</a></li>
+            </ul>
+          </li>
+          <li><a href="#code-examples">6. Code Examples</a>
+            <ul>
+              <li><a href="#code-include">6.1 Including the Framework</a></li>
+              <li><a href="#irq-setup">6.2 Setup your IRQ</a></li>
+              <li><a href="#rasterpolling">6.3 Rasterpolling</a></li>
+              <li><a href="#back2framework">6.4 Exit part and jump back to framework</a></li>
+            </ul>
+          </li>
+          <li><a href="#gt-music-sync">7. GT Music Syncing</a></li>
+          <li><a href="#sw-music-sync">8. SW Music Syncing</a></li>
+          <li><a href="#nt-music-sync">9. NT Music Syncing</a>
+            <ul>
+              <li><a href="#nt-music-code">9.1 NT Sync Code Examples</a>
+                <ul>
+                  <li><a href="#nt-music-code-01">9.1.1 Wait for new pattern (voice 1)</a></li>
+                  <li><a href="#nt-music-code-02">9.1.2 Check for snare instrument hit</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div id="introduction" class="section">
+        <h2>1. Introduction</h2>
+        <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+      </div>
+      <div id="prerequisities" class="section">
+        <h2>2. Prerequisities</h2>
+        <div id="prerequisities-demo">
+          <h3>2.1 Buildchain</h3>
+          <p>To be able to build the demo from source you need at least the following tools <strong>properly*</strong> installed on your computer:</p>
+          <ul>
+            <li><a href="https://www.gnu.org/software/make/">GNU Make</a></li>
+            <li><a href="https://sourceforge.net/projects/acme-crossass/">ACME Crossassembler</a></li>
+            <li><a href="https://sourceforge.net/projects/vice-emu/">c1541 / VICE</a></li>
+            <li><a href="https://bitbucket.org/magli143/exomizer/">exomizer</a></li>
+            <li><a href="https://www.gnu.org/software/bash/">GNU Bash compatible shell</a></li>
+          </ul>
+          <p><strong>*properly means:</strong> those tools should be available via $PATH on Linux/MacOS or %path% on Windows.</p>
+          <p>In the following paragraphs I'll try my best to explain how to compile and/or install the buildchain on different operating systems. But it's nearly impossible to describe all necessary steps in a 100% n00b-compatible way. In the best case I hope you know your OS an its inner workings by heart already, as I can only tell how <strong>*I*</strong> would setup the buildchain.</p>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="prerequisities-demo-linux">
+          <h4>2.1.1 Setup Buildchain on Linux</h4>
+          <p>A GNU Bash compatible shell should usually be included in most Linux distributions. So you're most likely good to go.</p>
+          <p>To get GNU Make (and other useful tools as i.e. GCC) most distributions have a meta-package for that. I.e. <strong>build-essentials</strong> on Ubuntu/Mint or <strong>base-devel</strong> on Arch Linux. To be able to build VICE, ACME and exomizer you need those tools anyway.</p>
+          <p>Although there may be binaries of VICE, ACME and (maybe?) even exomizer available in your distributions package repositories (or additional repositories) I'd recommend building those from source yourself on Linux.</p>
+          <p>For exomizer you only need GNU Make and GCC as already mentioned above. Projects hosted on sourceforge (like ACME &amp; VICE) use SVN (Subversion) as version management software.</p>
+          <p>While you're at it you may aswell install git also [which is used for version management of our demos] :-)</p>
+          <p>So i.e. on Ubuntu/Mint open up a terminal and type in:</p>
+          <pre>
+sudo apt-get install build-essentials subversion git
+          </pre>
+          <p>Then you're good to go to get the other tools sources. I like to keep those all in a "Sources" directory in im home dir. As I use my computer as a single user I usally copy all programs that don't come with an "make install" destination to <strong>/usr/local/bin/</strong>. If you're on a multiuser system you probably want those tools to be at <strong>~/.local/bin/</strong>.</p>
+          <h5>Create directory for sourcecodes:</h5>
+          <pre>
+cd ~
+mkdir Sources
+          </pre>
+          <h5>ACME compile and "install":</h5>
+          <pre>
+cd ~/Sources
+svn checkout https://svn.code.sf.net/p/acme-crossass/code-0/trunk acme-crossass-code-0
+cd acme-crossass-code-0/src
+make
+sudo cp acme /usr/local/bin/
+          </pre>
+          <h5>exomizer compile and "install"</h5>
+          <p>Download the latest exomizer Source ZIP-file from the <a href="https://bitbucket.org/magli143/exomizer/">exomizer homepage</a> (at the time of writing exomizer209) and unpack in <strong>~/Sources</strong>.</p>
+          <pre>
+cd ~/Sources/exomizer209/src/
+make
+sudo cp exomizer /usr/local/bin
+sudo cp exoraw /usr/local/bin
+sudo cp exobasic /usr/local/bin
+sudo cp b2membuff /usr/local/bin
+          </pre>
+          <h5>VICE compile and install:</h5>
+          <p>There are many options when you want to compile VICE. You can compile VICE with several different GUIs and a lot of different options. Personally I prefer the SDL UI - which I will describe here [needs the packages <strong>libsdl2-2.0</strong> and <strong>libsdl2-dev</strong> on Ubuntu]. You can find alternative instructions with GNOME UI i.e. on <a href="https://www.c64-wiki.de/wiki/VICE_kompilieren_f%c3%bcr_Ubuntu">this C64 Wiki page</a>.</p>
+          <pre>
+cd ~/Sources
+svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk vice-emu-code
+cd vice-emu-code/vice/
+./autogen.sh --add-missing
+./configure --enable-sdlui --disable-ffmpeg --with-sdlsound
+make
+sudo make install
+          </pre>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="prerequisities-demo-windows">
+          <h4>2.1.2 Setup Buildchain on Windows</h4>
+          <p>On Windows I'd strongly recommend to install and setup a <a href="https://www.cygwin.com/">Cygwin enviroment</a>. Maybe there are ways to work with all the tools in a native Windows way, but as far as I know, the "Cygwin-way" is a lot easier.</p>
+          <p>So first download <a href="https://cygwin.com/setup-x86.exe">setup-x86.exe</a> or <a href="https://cygwin.com/setup-x86_64.exe">setup-x86_64.exe</a> [*_64.exe if you have an 64bit Windows] from the <a href="https://cygwin.com/install.html">Cygwin homepage</a>.</p>
+          <p>When you run the Cygwin setup it will ask you for a "temporary" directory. Although it is called "temporary" you should choose a directory that you can/will use for Cygwin temp files in the future. If you don't delete your Browsers "Downloads" folder the suggested directory will be just fine.</p>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="prerequisities-demo-macos">
+          <h4>2.1.3 Setup Buildchain on MacOS</h4>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+      </div>
+      <div id="setup-git" class="section">
+        <h2>3. Setup GIT</h2>
+        <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+      </div>
+      <div id="coding-guidelines" class="section">
+        <h2>4. Coding Guidelines</h2>
+        <p>In general: code like you want. If everything works within the framework noone cares. If it doesn't you could make Spider cry, who is good friends with Jesus, so it's like you make Jesus cry. Oh and of course: every time you deliver code that doesn't work with the framework <strong>A KITTEN DIES!</strong></p>
+        <div id="coding-rules-1">
+          <h3>4.1 The Most Important Rule</h3>
+          <p class="warning">Do *not* use 'SEI' !!!</p>
+          <p>There may be certain situations where you might <strong>think</strong> you need <strong>SEI</strong>. In those cases be assured: <strong>You are wrong.</strong> You will never ever need to use <strong>SEI</strong> when coding within the framework.</p>
+          <ul>
+            <li><strong>If you want to turn off I/O</strong> -> do it in a timing uncritical moment.</li>
+            <li><strong>If you want to register your IRQ</strong> -> look in the code examples.</li>
+            <li><strong>If you want to do rasterpolling and wait for next frame</strong> -> use the <strong>fw_wait_irq</strong> routine.</li>
+            <li><strong>If the framework IRQ rasterline doesn't fit your needs</strong> -> gently put it elsewhere (and gently restore to $000 at the end of your part).</li>
+            <li><strong>If you want to use 'SEI' for other reasons</strong> -> Don't do it! Ask Spider for help or to patch the framework until your case is covered.</li>
+            <li><strong>If you use 'SEI' anyway</strong> -> at least <strong>*TWO* KITTEN WILL DIE!</strong></li>
+          </ul>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="coding-rules-2">
+          <h3>4.2 VIC Bank Switching</h3>
+          <p>As the framework uses the famous loader by Krill, doing VIC bank switching the <strong>usual way</strong> will break the loader. The <strong>"Krill-Safe"</strong> method for changing the VIC bank is:</p>
+          <pre>
+    ; $dd00 = %xxxxxx11 -&gt; bank0: $0000-$3fff
+    ; $dd00 = %xxxxxx10 -&gt; bank1: $4000-$7fff
+    ; $dd00 = %xxxxxx01 -&gt; bank2: $8000-$bfff
+    ; $dd00 = %xxxxxx00 -&gt; bank3: $c000-$ffff
+
+    lda #%000000xx ; &lt;- your desired VIC bank value, see above
+    sta $dd00
+          </pre>
+          <p><strong>A little hint:</strong> if you don't know your final memory layout and vic bank setup when starting your part you could setup the vic bank, video memory and charset like so:</p>
+          <pre>
+vicbank               = $4000
+charset               = vicbank+$0000
+vidmem0               = vicbank+$0800
+sprite_data           = vicbank+$0c00
+sprite_base           = &lt;((sprite_data-vicbank)/$40)
+
+    lda #&lt;!(vicbank/$4000) &amp; 3
+    sta $dd00
+
+    lda # &lt;(((vidmem0-vicbank)/$400) &lt;&lt; 4)+ &lt;(((charset-vicbank)/$800) &lt;&lt; 1)
+    sta $d018
+          </pre>
+          <p>Then you usually only have to change the value of the 'vicbank' label/symbol (and eventually the offset values) later.</p>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="coding-rules-3">
+          <h3>4.3. Random Numbers</h3>
+          <p>At the time of writing there is <strong>no</strong> safe way to create real random numbers within the framework. You obviously can't use SID, as there's a tune playing, but you also can't use the <strong>CIA</strong> because the framwork does a CIA timer setup for 63 cycle counting at init.</p>
+          <p>Consider the use of pseudo-random numbers or even a random-table instead. In many cases this will be "random enough". In a demo you usually want the exact same behaviour anyway everytime it is executed.</p>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="coding-rules-31">
+          <h4>4.3.1 Pseudo-RNG utilizing the stack</h4>
+          <p>Achim provided a neat example code for a pseudo random number generator that uses the stack as source.</p>
+          <pre>
+rnd:      lda #$41
+addrnd:   adc $0100
+          sta rnd+1
+          inc addrnd+1
+          rts
+          </pre>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+      </div>
+      <div id="tables" class="section">
+        <h2>5. Overview Tables</h2>
+        <div id="memory-layout">
+          <h3>5.1 Framework Memory Layout</h3>
+          <div class="table">
+            <table>
+              <tr>
+                <th>$0000 - $0001</th>
+                <td>as usual</td>
+                <td>FRAMEWORK/PARTS</td>
+              </tr>
+              <tr>
+                <th>$0002 - $0004</th>
+                <td>zeropage for irq save/restore A,X,Y</td>
+                <td>FRAMEWORK/PARTS</td>
+              </tr>
+              <tr>
+                <th>$0005 - $00DF</th>
+                <td>zeropage free for use in parts</td>
+                <td>PARTS</td>
+              </tr>
+              <tr>
+                <th>$00E0 - $00FF</th>
+                <td>zeropage used by framework</td>
+                <td>FRAMEWORK</td>
+              </tr>
+              <tr>
+                <th>$0100 - $01FF</th>
+                <td>stack</td>
+                <td>FRAMEWORK/PARTS</td>
+              </tr>
+              <tr>
+                <th>$0200 - $02FF</th>
+                <td>framework code</td>
+                <td>FRAMEWORK</td>
+              </tr>
+              <tr>
+                <th>$0300 - $03FF</th>
+                <td>framework irq</td>
+                <td>FRAMEWORK</td>
+              </tr>
+              <tr>
+                <th>$0400 - $07FF</th>
+                <td>free for use in parts (at runtime)</td>
+                <td>FRAMEWORK INIT/PARTS</td>
+              </tr>
+              <tr>
+                <th>$0800 - $0BFF</th>
+                <td>krill loader resident</td>
+                <td>FRAMEWORK</td>
+              </tr>
+              <tr>
+                <th>$0C00 - $1FFD</th>
+                <td>space for music</td>
+                <td>FRAMEWORK</td>
+              </tr>
+              <tr>
+                <th>$1FFE - $1FFF</th>
+                <td>lo/hi pointer to part startaddress</td>
+                <td>PARTS</td>
+              </tr>
+              <tr>
+                <th>$2000 - $FFF7</th>
+                <td>free for use in parts (at runtime)*</td>
+                <td>PARTS</td>
+              </tr>
+              <tr>
+                <th>$FFF8 - $FFFF</th>
+                <td>vectors</td>
+                <td>FRAMEWORK/PARTS</td>
+              </tr>
+            </table>
+          </div>
+          <p>* $D000-$FFF7 is free to use at runtime, but uncrunched code and data should fit into memory between $1FFE - $CFFF, as <strong>loading into I/O - Kernal area is not activated.</strong></p>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="registers">
+          <h3>5.2 Important Framework Registers</h3>
+          <div class="table">
+            <table>
+              <tr>
+                <th>fw_irq_lo</th>
+                <td>lo-byte of your first irq in the frame</td>
+              </tr>
+              <tr>
+                <th>fw_irq_hi</th>
+                <td>hi-byte of your first irq in the frame</td>
+              </tr>
+              <tr>
+                <th>fw_d011_value</th>
+                <td>$d011 value that is set at the end of the framework irq</td>
+              </tr>
+              <tr>
+                <th>fw_d012_value</th>
+                <td>$d012 value that is set at the end of the framework irq</td>
+              </tr>
+              <tr>
+                <th>fw_color_d020</th>
+                <td>value of $d020 to be set at line $000 by framework irq</td>
+              </tr>
+              <tr>
+                <th>fw_color_d021</th>
+                <td>value of $d021 to be set at line $000 by framework irq</td>
+              </tr>
+              <tr>
+                <th>fw_global_ct<br>fw_global_ct+1<br>fw_global_ct+2</th>
+                <td>continuous 24 bit counter ( READONLY!!!! )</td>
+              </tr>
+              <tr>
+                <th>fw_preserve_screen</th>
+                <td>if set to 1 the framework will keep the current values of $d011, $d016, $d018 while loading the next part. i.e. for keeping a PETSCII on the screen make sure that fw_d011_value is setup correctly!!!</td>
+              </tr>
+            </table>
+          </div>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="routines">
+          <h3>5.3 Important Framework Routines</h3>
+          <div class="table">
+            <table>
+              <tr>
+                <th>fw_irq<br>fw_irq_addr</th>
+                <td>framework irq</td>
+              </tr>
+              <tr>
+                <th>fw_wait_irq</th>
+                <td>waits until framework irq is over (at least 1 frame)</td>
+              </tr>
+              <tr>
+                <th>fw_back2framework</th>
+                <td>jump here from your mainloop on part exit</td>
+              </tr>
+            </table>
+          </div>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+      </div>
+      <div id="code-examples" class="section">
+        <h2>6. Code Examples</h2>
+        <div id="code-include">
+          <h3>6.1 Including the Framework</h3>
+          <p>In order to use the framework you have to at least include the symbols/labels from <strong>frameworksymbols.inc</strong> and put the entry point of your code into addresses <strong>$1ffe/$1fff</strong> (lo/hi).</p>
+          <p>Of course you usually also want to be able to test your part standalone. Therefore include the <strong>framework-noloader.prg</strong> at <strong>$0400</strong> if the RELEASE variable is 0.</p>
+          <p>Usually Spider will deliver the soundtrack not only as a whole, but also split into snippets to be found in src/framework/music/. So if you want to sync your part to a specific music section, just include the SID file you want.</p>
+          <p><strong>ATTENTION:</strong> the framework-noloader.prg is already build with the whole tune, so acme will give you a warning that you overwrite memory. Therefore it's also important to include the SID file afterwards.</p>
+          <pre>
+!source "../../bin/framework/frameworksymbols.inc"
+
+!if RELEASE = 0 {
+  *= $0400
+    !bin "../../bin/framework/framework-noloader.prg",,2
+
+  *= fw_music_init
+    !bin "../framework/music/TUNESNIPPET.sid",,$7e
+}
+
+*= $1ffe
+    !byte &lt;code_start
+    !byte &gt;code_start
+          </pre>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="irq-setup">
+          <h3>6.2 Setup your IRQ</h3>
+          <p>As there is already a raster-irq running when your code starts you must not setup your IRQ in the usual way. Instead you have to write the values you need into the framework registers.</p>
+          <p><strong>fw_irq_lo</strong> is the pendant to <strong>$fffe</strong>, <strong>fw_irq_hi</strong> the pendant to <strong>$ffff</strong> and <strong>fw_d011_value/fw_d012_value</strong> of course are the values for <strong>$d011/$d012</strong>.</p>
+          <p><strong>ATTENTION:</strong> Be aware that after this setup your IRQ fires the first time in the <strong>next</strong> frame, no matter what value for $d012 you have given. So if you want to have a synced mainloop afterwards, better <strong>jsr fw_wait_irq</strong> again.</p>
+          <pre>
+    jsr fw_wait_irq
+
+    lda #&lt;MYIRQ
+    sta fw_irq_lo
+    lda #&gt;MYIRQ
+    sta fw_irq_hi
+
+    lda #MYIRQ_RASTERLINE
+    sta fw_d012_value
+    lda #MY_D011_VALUE
+    sta fw_d011_value
+          </pre>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="rasterpolling">
+          <h3>6.3 Rasterpolling</h3>
+          <p>If you don't need any IRQ and all your routines will fit into one frame and want to do a part in the oldskewl 'rasterpolling' way, you can easily do that.</p>
+          <p>But there are a few things you should be aware of:</p>
+          <ul>
+            <li>As mentioned <a href="#coding-rules-1">above</a>: do *not* use 'SEI'!</li>
+            <li>Think from 'top to bottom', instead of 'bottom to top'</li>
+            <li>The 'top' will be around rasterline $011-$01A (in dependence of the music), the 'bottom' will be as usual at $138.</li>
+          </ul>
+          <p>Here's an example how a 'typical' rasterpolling mainloop could look like:</p>
+          <pre>
+mainloop:
+    jsr fw_wait_irq
+                                  ; &lt;- RASTER around $011-$01A here
+
+    ; .. some code in the top border ..
+
+    lda #$32
+    cmp $d012
+    bne *-3
+                                  ; &lt;- RASTER around the beginning of the screen here
+
+    ; .. some code in the screen ..
+
+    lda #$fe
+    cmp $d012
+    bne *-3
+                                  ; &lt;- RASTER around the end of the screen here
+
+    ; .. some code in the lower border ..
+
+    ; !IMPORTANT! be sure lower border code is done *before* RASTER wraps to $000
+
+    jmp mainloop
+          </pre>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+        <div id="back2framework">
+          <h3>6.4 Exit part and jump back to framework</h3>
+          <p>If your part ends with a black screen:</p>
+          <pre>
+exit_part:
+    jsr fw_wait_irq
+
+    lda #&lt;fw_irq
+    sta $fffe
+    sta fw_irq_lo
+    lda #&gt;fw_irq
+    sta $ffff
+    sta fw_irq_hi
+
+    lda #$00
+    sta $d012
+    sta fw_d012_value
+
+    lda #$0b
+    sta $d011
+    sta fw_d011_value
+
+    jmp fw_back2framework
+          </pre>
+          <p>If your part ends with a PETSCII image at $0400 that should be kept on screen while loading:</p>
+          <pre>
+exit_part:
+    jsr fw_wait_irq
+
+    lda #&lt;fw_irq
+    sta $fffe
+    sta fw_irq_lo
+    lda #&gt;fw_irq
+    sta $ffff
+    sta fw_irq_hi
+
+    lda #$00
+    sta $d012
+    sta fw_d012_value
+
+    lda #$1b
+    sta $d011
+    sta fw_d011_value
+
+    lda #$01
+    sta fw_preserve_screen
+
+    jmp fw_back2framework
+          </pre>
+          <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        </div>
+      </div>
+      <div id="gt-music-sync" class="section">
+        <h2>7. GT Music Syncing</h2>
+        <div class="table">
+          <table>
+            <tr>
+              <th>Label</th>
+              <th>Offset Voice&nbsp;1</th>
+              <th>Offset Voice&nbsp;2</th>
+              <th>Offset Voice&nbsp;3</th>
+              <th>Description</th>
+            </tr>
+          </table>
+        </div>
+        <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+      </div>
+      <div id="sw-music-sync" class="section">
+        <h2>8. SW Music Syncing</h2>
+        <p>Internal Registers from SID-Wizard V1.5 Playroutine<br><strong>ADRESS = BASE_ADRESS + OFFSET</strong></p>
+        <div class="table">
+          <table>
+            <tr>
+              <th>Label</th>
+              <th>Offset Voice&nbsp;1</th>
+              <th>Offset Voice&nbsp;2</th>
+              <th>Offset Voice&nbsp;3</th>
+              <th>Description</th>
+            </tr>
+          <tr>
+            <th>FREQLO</th>
+            <td>$1E</td>
+            <td>$25</td>
+            <td>$2C</td>
+            <td>(SID.0) FREQUENCY (PITCH) LO-BYTE GHOST-REGISTERS</td>
+          </tr>
+          <tr>
+            <th>FREQHI</th>
+            <td>$1F</td>
+            <td>$26</td>
+            <td>$2D</td>
+            <td>FREQUENCY (PITCH) PITCH HI-BYTE GHOST-REGISTERS</td>
+          </tr>
+          <tr>
+            <th>PWLOGHO</th>
+            <td>$20</td>
+            <td>$27</td>
+            <td>$2E</td>
+            <td>(SID.2) PULSEWIDTH LOW-BITE GHOST-REGISTERS</td>
+          </tr>
+          <tr>
+            <th>PWHIGHO</th>
+            <td>$21</td>
+            <td>$28</td>
+            <td>$2F</td>
+            <td>(SID.3) PULSEWIDTH HI-BYTE GHOST-REGISTERS</td>
+          </tr>
+          <tr>
+            <th>WFGHOST</th>
+            <td>$22</td>
+            <td>$29</td>
+            <td>$30</td>
+            <td>(SID.4) WAVEFORM/CTRL GHOST-REGISTERS</td>
+          </tr>
+          <tr>
+            <th>PTNGATE</th>
+            <td>$23</td>
+            <td>$2A</td>
+            <td>$31</td>
+            <td>GATE OFF/ON STATUS CONTROLLED BY PATTERN (AND MUTE/SOLO IN EDITOR?)</td>
+          </tr>
+          <tr>
+            <th>PWEEPCNT</th>
+            <td>$24</td>
+            <td>$2B</td>
+            <td>$32</td>
+            <td>PULSEWIDTH SWEEP-LENGTH TIMER</td>
+          </tr>
+          <tr>
+            <th>PACKCNT</th>
+            <td>$33</td>
+            <td>$3A</td>
+            <td>$41</td>
+            <td>PACKED NOP/REST ($70..$77) COUNTER</td>
+          </tr>
+          <tr>
+            <th>SPDCNT</th>
+            <td>$34</td>
+            <td>$3B</td>
+            <td>$42</td>
+            <td>FRAMESPEED COUNTERS (INCREMENTAL)</td>
+          </tr>
+          <tr>
+            <th>SEQPOS</th>
+            <td>$35</td>
+            <td>$3C</td>
+            <td>$43</td>
+            <td>ORDERLIST SEQUENCE PLAYPOSITION-SHOULDN'T BE ON PAGE-BOUNDARY!</td>
+          </tr>
+          <tr>
+            <th>PTNPOS</th>
+            <td>$36</td>
+            <td>$3D</td>
+            <td>$44</td>
+            <td>PATTERN PLAY-POSITION (IN MEMORY)</td>
+          </tr>
+          <tr>
+            <th>WFTPOS</th>
+            <td>$37</td>
+            <td>$3E</td>
+            <td>$45</td>
+            <td>WF-ARP TABLE POSITION-INDEX</td>
+          </tr>
+          <tr>
+            <th>PWTPOS</th>
+            <td>$38</td>
+            <td>$3F</td>
+            <td>$46</td>
+            <td>PW-TABLE POSITION-INDEX</td>
+          </tr>
+          <tr>
+            <th>ARPSCNT</th>
+            <td>$39</td>
+            <td>$40</td>
+            <td>$47</td>
+            <td>ARPEGGIO-SPEED COUNTERS; also used as multispeed 1st frame detector for multispeed</td>
+          </tr>
+          <tr>
+            <th>CURPTN</th>
+            <td>$48</td>
+            <td>$4F</td>
+            <td>$56</td>
+            <td>CURRENT PATTERN</td>
+          </tr>
+          <tr>
+            <th>CURNOT</th>
+            <td>$49</td>
+            <td>$50</td>
+            <td>$57</td>
+            <td>CURRENT NOTES/GATEOFF ON TRACK 0..2 (+FX0, VIB,RING)</td>
+          </tr>
+          <tr>
+            <th>DPITCH</th>
+            <td>$4A</td>
+            <td>$51</td>
+            <td>$58</td>
+            <td>CURRENT DISCRETE NOTE-PITCH (ISN'T AFFECTED BY EFFECTS)</td>
+          </tr>
+          <tr>
+            <th>CURIFX</th>
+            <td>$4B</td>
+            <td>$52</td>
+            <td>$59</td>
+            <td>CURRENT INSTR/ONESHOT-FX ON TRACK 0..2</td>
+          </tr>
+          <tr>
+            <th>CURINS</th>
+            <td>$4C</td>
+            <td>$53</td>
+            <td>$5A</td>
+            <td>CURRENT (SELECTED) INSTRUMENT - NOT OVERWRITTEN BY FX/LEGATO</td>
+          </tr>
+          <tr>
+            <th>CURFX2</th>
+            <td>$4D</td>
+            <td>$54</td>
+            <td>$5B</td>
+            <td>CURRENT FX2-NUMBERS ON TRACK 0..2</td>
+          </tr>
+          <tr>
+            <th>CURVAL</th>
+            <td>$4E</td>
+            <td>$55</td>
+            <td>$5c</td>
+            <td>CURRENT FX2-VALUES ON TRACK 0..2</td>
+          </tr>
+          </table>
+        </div>
+        <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+      </div>
+      <div id="nt-music-sync" class="section">
+        <h2>9. NT Music Syncing</h2>
+        <p>Internal registers from NinjaTracker v2.04 sourcecode.<br><strong>ADRESS = BASE_ADRESS + $35B + OFFSET</strong></p>
+        <div class="table">
+          <table>
+            <tr>
+              <th>Label</th>
+              <th>Offset Voice&nbsp;1</th>
+              <th>Offset Voice&nbsp;2</th>
+              <th>Offset Voice&nbsp;3</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <th>nt_chnpattpos</th>
+              <td>$00</td>
+              <td>$07</td>
+              <td>$0E</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chncounter</th>
+              <td>$01</td>
+              <td>$08</td>
+              <td>$0F</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chnnewnote</th>
+              <td>$02</td>
+              <td>$09</td>
+              <td>$10</td>
+              <td>Current note</td>
+            </tr>
+            <tr>
+              <th>nt_chnwavepos</th>
+              <td>$03</td>
+              <td>$0A</td>
+              <td>$11</td>
+              <td>Waveform pointer<br>Best adress to determine instrument change.</td>
+            </tr>
+            <tr>
+              <th>nt_chnpulsepos</th>
+              <td>$04</td>
+              <td>$0B</td>
+              <td>$12</td>
+              <td>Pulsewave pointer</td>
+            </tr>
+            <tr>
+              <th>nt_chnwave</th>
+              <td>$05</td>
+              <td>$0C</td>
+              <td>$13</td>
+              <td>Current waveform / gatebit<br>[for $D404, $D40B, $D412]</td>
+            </tr>
+            <tr>
+              <th>nt_chnwaveold</th>
+              <td>$06</td>
+              <td>$0D</td>
+              <td>$14</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chngate</th>
+              <td>$15</td>
+              <td>$1C</td>
+              <td>$23</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chntrans</th>
+              <td>$16</td>
+              <td>$1D</td>
+              <td>$24</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chncmd</th>
+              <td>$17</td>
+              <td>$1E</td>
+              <td>$25</td>
+              <td>Current instrument / command<br>Bits 0-6 represent the command number [starting at $01]. If bit 7 is set command execution is continous (no pointer reset, no hard restart).<br>So for syncing to an instrument it's probably best practice to ignore bit 7.</td>
+            </tr>
+            <tr>
+              <th>nt_chnsongpos</th>
+              <td>$18</td>
+              <td>$1F</td>
+              <td>$26</td>
+              <td>Orderlist position<br>Can be used to sync on pattern change.</td>
+            </tr>
+            <tr>
+              <th>nt_chnpattnum</th>
+              <td>$19</td>
+              <td>$20</td>
+              <td>$27</td>
+              <td>Current pattern number</td>
+            </tr>
+            <tr>
+              <th>nt_chnduration</th>
+              <td>$1A</td>
+              <td>$21</td>
+              <td>$28</td>
+              <td>Size of current pattern</td>
+            </tr>
+            <tr>
+              <th>nt_chnnote</th>
+              <td>$1B</td>
+              <td>$22</td>
+              <td>$29</td>
+              <td>Current note (table pointer)<br>nt_chnnewnote * 2 (note table uses 16 bit / word length per entry)</td>
+            </tr>
+            <tr>
+              <th>nt_chnfreqlo</th>
+              <td>$2A</td>
+              <td>$30</td>
+              <td>$36</td>
+              <td>Temp register for $D400, $D407, $D40E</td>
+            </tr>
+            <tr>
+              <th>nt_chnfreqhi</th>
+              <td>$2B</td>
+              <td>$31</td>
+              <td>$37</td>
+              <td>Temp register for $D401, $D408, $D40F</td>
+            </tr>
+            <tr>
+              <th>nt_chnpulse</th>
+              <td>$2C</td>
+              <td>$32</td>
+              <td>$38</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chnwavetime</th>
+              <td>$2D</td>
+              <td>$33</td>
+              <td>$39</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_chnpulsetime</th>
+              <td>$2E</td>
+              <td>$34</td>
+              <td>$3A</td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>nt_filttime</th>
+              <td>$2F</td>
+              <td>$35</td>
+              <td>$3B</td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+        <div id="nt-music-code">
+          <h3>9.1 NT Sync Code Examples</h3>
+          <div id="nt-music-code-01">
+            <h4>9.1.1 Wait for new pattern (voice 1)</h4>
+            <pre>
+nt_regs = fw_music_init + $035b
+
+init:
+    lda nt_regs+$18     ; init wait_pattern with current pattern value
+    sta wait_pattern+1  ; don't put this too early in your init
+.
+.
+.
+
+wait_pattern:           ; call once per frame after playing music
+                        ; check pattern_flag afterwards
+    lda #0
+    cmp nt_regs+$18
+    bne +
+    lda #0
+    sta pattern_flag
+    rts
++   lda nt_regs+$18
+    sta wait_pattern+1
+    lda #1
+    sta pattern_flag
+    rts
+
+pattern_flag:
+    !byte $00           ; will be $01 in the frame when pattern changed
+            </pre>
+            <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+          </div>
+          <div id="nt-music-code-02">
+            <h4>9.1.2 Check for snare instrument hit</h4>
+            <p>Of course this works for all other instruments too. Also you don't have to check all three SID channels if your musician tells you on which channels the instrument is used obviously.</p>
+            <pre>
+nt_regs = fw_music_init + $035b
+snare_wavept = $08      ; ask the musician for this value!
+
+wait_snare:             ; call once per frame after playing music
+                        ; check snare_flag afterwards
+    lda #snare_wavept
+    cmp nt_regs+$03
+    beq .snare_hit
+    cmp nt_regs+$0a
+    beq .snare_hit
+    cmp nt_regs+$11
+    beq .snare_hit
+    lda #0
+    !byte $2c
+.snare_hit
+    lda #1
+    sta snare_flag
+    rts
+
+snare_flag:
+    !byte $00           ; will be $01 in the frame when snare is hit
+            </pre>
+            <a class="to-top" href="#top">&uarr; back to top &uarr;</a>
+          </div>
+        </div>
+      </div>
+      <div id="footer">
+        <p><i>Last Update: <time datetime="2017-01-29T12:00">January 29, 2017</time></i></p>
+      </div>
+    </div>
+    <script>
+
+    </script>
+  </body>
+</html>
