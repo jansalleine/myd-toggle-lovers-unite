@@ -203,6 +203,7 @@ irq00:              !if DEBUG=1 {
                     }
                     lda #d018_val0
                     sta 0xD018
+music_play_2x:      bit 0x0000
                     !if DEBUG=1 {
                         dec 0xD020
                     }
@@ -335,6 +336,8 @@ irq14:              lda #CYAN
                     sta 0xD011
                     jsr cursor_place
                     jsr cursor_anim
+enable_loadbar:     bit print_loadbar
+                    jsr print_timer
                     +flag_set flag_irq_ready
                     jmp irq_end
 
@@ -357,8 +360,6 @@ irq_lines:          !byte IRQ_LINE00, IRQ_LINE01, IRQ_LINE02, IRQ_LINE03
                     !byte IRQ_LINE12, IRQ_LINE13, IRQ_LINE14, IRQ_LINE15
 ; ==============================================================================
 init_code:          jsr install
-                    lda #MEMCFG
-                    sta 0x01
                     jsr init_timer
                     jsr init_nmi
                     jsr init_vic
@@ -467,6 +468,13 @@ init_vic:           lda #dd00_val0
                     !for i, 0, 9 {
                         sta 0xD800+0x0230+(i*40)
                     }
+
+                    ldx #16
+                    lda #PINK
+-                   sta 0xD800+0x0231+(10*40)+9,x
+                    dex
+                    bpl -
+
                     lda #BLACK
                     sta 0xD021
 
@@ -478,7 +486,11 @@ init_music:         lda #0
 init_addr:          jsr 0x0000
                     lda #ENABLE
                     sta music_play
-                    rts
+init_addr_2x:       lda #0
+                    beq +
+                    lda #ENABLE
+                    sta music_play_2x
++                   rts
 ; ==============================================================================
                     !zone MAINLOOP
 mainloop:           jsr wait_irq
@@ -486,23 +498,31 @@ loadflag:           lda #1
                     beq +
                     lda #0
                     sta loadflag+1
+                    jsr music_disable
                     jsr load_song
                     jsr init_music
 +
-                    jsr keyboard_get
+enable_keyboard:    bit keyboard_get
+enable_print_win:   bit print_window
                     jmp mainloop
 ; ==============================================================================
-load_song:          ldx songtoload
+load_song:          lda #ENABLE
+                    sta enable_loadbar
+                    ldx songtoload
                     lda songplaylist,x
                     tax
                     lda songplay_lo,x
                     sta music_play+1
+                    sta music_play_2x+1
                     lda songplay_hi,x
                     sta music_play+2
+                    sta music_play_2x+2
                     lda songinit_hi,x
                     sta init_addr+2
                     lda songinit_lo,x
                     sta init_addr+1
+                    lda songspeedlist,x
+                    sta init_addr_2x+1
                     txa
                     jsr hex2text
                     sta filename
@@ -515,7 +535,13 @@ load_song:          ldx songtoload
                     jsr loadcompd
                     bcc +
                     jmp *
-+                   rts
++                   lda #ENABLE
+                    sta enable_keyboard
+                    sta enable_print_win
+                    jsr reset_loadbar
+                    lda #DISABLE
+                    sta enable_loadbar
+                    rts
 filename:           !tx "00"
 ; ==============================================================================
                     !zone NMI
@@ -563,7 +589,7 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     jmp .crsr_down
 +                   cmp #KEY_RETURN
                     bne +
-                    jmp .key_exit ; select
+                    jmp .return ; select
 +                   cmp #KEY_STOP
                     bne +
                     jmp .key_exit ; pause
@@ -576,62 +602,94 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     jsr cursor_delete
                     dec cursorpos
                     dec songselected
-+                   rts
+-                   rts
++                   lda songwindowtop
+                    beq -
+                    dec songwindowtop
+                    dec songselected
+                    lda #ENABLE
+                    sta enable_print_win
+                    rts
 .crsr_down:         lda cursorpos
                     cmp #9
                     beq +
                     jsr cursor_delete
                     inc cursorpos
                     inc songselected
-+                   rts
+-                   rts
++                   lda songwindowtop
+                    cmp #38-9
+                    beq -
+                    inc songwindowtop
+                    inc songselected
+                    lda #ENABLE
+                    sta enable_print_win
+                    rts
+
+.return:            lda songselected
+                    sta songtoload
+                    sta songplaying
+                    lda #DISABLE
+                    sta enable_keyboard
+                    lda #1
+                    sta loadflag+1
+                    rts
+; ==============================================================================
+                    !zone MUSIC
+music_disable:      lda #DISABLE
+                    sta music_play
+                    sta music_play_2x
+                    lda #0
+                    sta 0xD418
+                    rts
 ; ==============================================================================
                     !zone SONGS
                     *= songdata
                     ;!scr"01234567890123456789012345"
-songtitles:         !scr "64K Memory Lane           "
-                    !scr "Anticipation              "
-                    !scr "Boreal Sunrise            "
-                    !scr "Bring mich nach Hause, Sp."
-                    !scr "Cheers & Tributes         "
-                    !scr "Cute Bundle of Fluff      "
-                    !scr "Defier of Deadlines       "
-                    !scr "Euphoria                  "
-                    !scr "Fireflies                 "
-                    !scr "Flowing Slowly (extended) "
-                    !scr "Glacial Blues             "
-                    !scr "Homecoming                "
-                    !scr "Irrlicht                  "
-                    !scr "Jaded                     "
-                    !scr "Kicks Like a M.U.L.E.     "
-                    !scr "Little Heart              "
-                    !scr "Maniac Marstall (LuheCon) "
-                    !scr "Mayday! in Monsterland    "
-                    !scr "MuckelSID                 "
-                    !scr "Nappy Go Lucky            "
-                    !scr "Nightlights               "
-                    !scr "Notch It                  "
-                    !scr "Oakyard Memories          "
-                    !scr "Pantheon                  "
-                    !scr "Pompeii                   "
-                    !scr "Quietus                   "
-                    !scr "Redshift Infinite         "
-                    !scr "Rogaland Revisited        "
-                    !scr "Selenopolis 2.0           "
-                    !scr "Sparkle                   "
-                    !scr "Supremacy Intro           "
-                    !scr "Tao Tao                   "
-                    !scr "Tidal Waves               "
-                    !scr "Transmission 64           "
-                    !scr "Unity                     "
-                    !scr "Ursa Minor                "
-                    !scr "Valiant Adventurer 1983   "
-                    !scr "Welc0me Aboard            "
-                    !scr "Wieselflink               "
-                    !scr "Wintry Haze               "
-songtitles_lo:      !for i, 0, 39 {
+songtitles:         !scr "64K Memory Lane           "         ; 00
+                    !scr "Anticipation              "         ; 01
+                    !scr "Boreal Sunrise            "         ; 02
+                    !scr "Bring mich nach Hause, Sp."         ; 03
+                    !scr "Cute Bundle of Fluff      "         ; 04
+                    !scr "Defier of Deadlines       "         ; 05
+                    !scr "Euphoria                  "         ; 06
+                    !scr "Fireflies                 "         ; 07
+                    !scr "Flowing Slowly (extended) "         ; 08
+                    !scr "Glacial Blues             "         ; 09
+                    !scr "Homecoming                "         ; 10
+                    !scr "Irrlicht                  "         ; 11
+                    !scr "Jaded                     "         ; 12
+                    !scr "Kicks Like a M.U.L.E.     "         ; 13
+                    !scr "Little Heart              "         ; 14
+                    !scr "Maniac Marstall (LuheCon) "         ; 15
+                    !scr "Mayday! in Monsterland    "         ; 16
+                    !scr "MuckelSID                 "         ; 17
+                    !scr "Nappy Go Lucky            "         ; 18
+                    !scr "Nightlights               "         ; 19
+                    !scr "Notch It                  "         ; 20
+                    !scr "Oakyard Memories          "         ; 21
+                    !scr "Pantheon                  "         ; 22
+                    !scr "Pompeii                   "         ; 23
+                    !scr "Quietus                   "         ; 24
+                    !scr "Redshift Infinite         "         ; 25
+                    !scr "Rogaland Revisited        "         ; 26
+                    !scr "Selenopolis 2.0           "         ; 27
+                    !scr "Sparkle                   "         ; 28
+                    !scr "Supremacy Intro           "         ; 29
+                    !scr "Tao Tao                   "         ; 30
+                    !scr "Tidal Waves               "         ; 31
+                    !scr "Transmission 64           "         ; 32
+                    !scr "Unity                     "         ; 33
+                    !scr "Ursa Minor                "         ; 34
+                    !scr "Valiant Adventurer 1983   "         ; 35
+                    !scr "Welc0me Aboard            "         ; 36
+                    !scr "Wieselflink               "         ; 37
+                    !scr "Wintry Haze               "         ; 38
+
+songtitles_lo:      !for i, 0, 38 {
                         !byte <(songtitles+(i*26))
                     }
-songtitles_hi:      !for i, 0, 39 {
+songtitles_hi:      !for i, 0, 38 {
                         !byte >(songtitles+(i*26))
                     }
 songvidmem_lo:      !for i, 0, 9 {
@@ -646,75 +704,134 @@ songcolmem_lo:      !for i, 0, 9 {
 songcolmem_hi:      !for i, 0, 9 {
                         !byte >(0xD800+0x0231+(i*40))
                     }
-songplaylist:       !byte 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-                    !byte 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
-                    !byte 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
-                    !byte 33, 34, 35, 36, 37, 38, 39
-songplaying:        !byte 0x00
-songtoload:         !byte 0x00
-songwindowtop:      !byte 0x00
-songselected:       !byte 0x00
+songplaylist:
+                    !byte 38, 4, 26, 25, 15, 12, 36, 27
+                    !byte 30, 22, 24, 23, 16, 19, 10, 37
+                    !byte 31, 14, 21, 11, 28, 8, 20, 6
+                    !byte 1, 32, 7, 2, 13, 5, 35, 18
+                    !byte 17, 33, 0, 34, 9, 3, 29
+songplaylist_end:
+songspeedlist:
+                    !byte 0, 1, 0, 0, 0, 1, 1, 0
+                    !byte 0, 0, 0, 0, 0, 0, 0, 0
+                    !byte 0, 0, 0, 0, 0, 0, 0, 1
+                    !byte 0, 0, 0, 1, 0, 0, 0, 0
+                    !byte 0, 0, 0, 0, 0, 0, 0
+
+songplaying:        !byte 0
+songtoload:         !byte 0
+songwindowtop:      !byte 0
+songselected:       !byte 0
 songinit_lo:
-                    !byte <0x1000, <0x10B8, <0x1000, <0x1000, <0x10B8, <0x1000, <0x10B8, <0x10B8
+                    !byte <0x1000, <0x10B8, <0x1000, <0x1000, <0x1000, <0x10B8, <0x10B8, <0x1000
+                    !byte <0x1000, <0x1000, <0x10B8, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000
+                    !byte <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x10B8
                     !byte <0x1000, <0x1000, <0x1000, <0x10B8, <0x1000, <0x1000, <0x1000, <0x1000
-                    !byte <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000
-                    !byte <0x10B8, <0x1000, <0x1000, <0x1000, <0x10B8, <0x1000, <0x1000, <0x1000
-                    !byte <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000
+                    !byte <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000, <0x1000
 songinit_hi:
-                    !byte >0x1000, >0x10B8, >0x1000, >0x1000, >0x10B8, >0x1000, >0x10B8, >0x10B8
+                    !byte >0x1000, >0x10B8, >0x1000, >0x1000, >0x1000, >0x10B8, >0x10B8, >0x1000
+                    !byte >0x1000, >0x1000, >0x10B8, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000
+                    !byte >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x10B8
                     !byte >0x1000, >0x1000, >0x1000, >0x10B8, >0x1000, >0x1000, >0x1000, >0x1000
-                    !byte >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000
-                    !byte >0x10B8, >0x1000, >0x1000, >0x1000, >0x10B8, >0x1000, >0x1000, >0x1000
-                    !byte >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000
+                    !byte >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000, >0x1000
 songplay_lo:
-                    !byte <0x1003, <0x10CF, <0x1003, <0x1003, <0x10D3, <0x1003, <0x10CF, <0x10CF
+                    !byte <0x1003, <0x10CF, <0x1003, <0x1003, <0x1003, <0x10CF, <0x10CF, <0x1003
+                    !byte <0x1003, <0x1003, <0x10CF, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003
+                    !byte <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x10CF
                     !byte <0x1003, <0x1003, <0x1003, <0x10CF, <0x1003, <0x1003, <0x1003, <0x1003
-                    !byte <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003
-                    !byte <0x10CF, <0x1003, <0x1003, <0x1003, <0x10CF, <0x1003, <0x1003, <0x1003
-                    !byte <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003
+                    !byte <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003, <0x1003
 songplay_hi:
-                    !byte >0x1003, >0x10CF, >0x1003, >0x1003, >0x10D3, >0x1003, >0x10CF, >0x10CF
+                    !byte >0x1003, >0x10CF, >0x1003, >0x1003, >0x1003, >0x10CF, >0x10CF, >0x1003
+                    !byte >0x1003, >0x1003, >0x10CF, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
+                    !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x10CF
                     !byte >0x1003, >0x1003, >0x1003, >0x10CF, >0x1003, >0x1003, >0x1003, >0x1003
-                    !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
-                    !byte >0x10CF, >0x1003, >0x1003, >0x1003, >0x10CF, >0x1003, >0x1003, >0x1003
-                    !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
+                    !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
 ; ==============================================================================
                     !zone PRINT
-print_window:       ldx songwindowtop
-                    txa
+print_window:       lda songwindowtop
+                    sta .current_index
                     clc
                     adc #10
                     sta .cmp_end+1
                     lda songplaying
                     sta .cmp_playing+1
-.loop:              lda songtitles_lo,x
+                    lda .current_index
+.loop:              tax
+                    lda songplaylist,x
+                    tax
+                    lda songtitles_lo,x
                     sta .src+1
                     lda songtitles_hi,x
                     sta .src+2
-                    lda songvidmem_lo,x
+.vidmempointer:     ldy #0
+                    lda songvidmem_lo,y
                     sta .dest+1
-                    lda songvidmem_hi,x
+                    lda songvidmem_hi,y
                     sta .dest+2
-.cmp_playing:       cpx #0
-                    bne +
-                    lda songcolmem_lo,x
+                    lda songcolmem_lo,y
                     sta .coldest+1
-                    lda songcolmem_hi,x
+                    lda songcolmem_hi,y
                     sta .coldest+2
-                    lda #LIGHT_GREEN
+                    lda .current_index
+.cmp_playing:       cmp #0
+                    bne +
+                    ldx #LIGHT_GREEN
+                    !byte 0x2C
++                   ldx #YELLOW
                     ldy #25
+-                   txa
 .coldest:           sta 0x0000,y
-                    dey
-                    bpl .coldest
-+                   ldy #25
 .src:               lda 0x0000,y
 .dest:              sta 0x0000,y
                     dey
-                    bpl .src
-                    inx
-.cmp_end:           cpx #0
+                    bpl -
+                    inc .vidmempointer+1
+                    inc .current_index
+                    lda .current_index
+.cmp_end:           cmp #0
                     bne .loop
+                    lda #0
+                    sta .vidmempointer+1
+                    lda #DISABLE
+                    sta enable_print_win
                     rts
+.current_index:     !byte 0x00
+
+                    LOADBAR_SPEED = 2
+                    LOADBAR_FIRST_CHAR = 247
+                    LOADBAR_LAST_CHAR = 255
+print_loadbar:
+.xsav:              ldx #0
+.char:              lda #LOADBAR_FIRST_CHAR
+                    sta vidmem1+0x0231+(10*40)+9,x
+                    inc .char+1
+                    lda .char+1
+                    cmp #0
+                    bne +
+                    lda #LOADBAR_FIRST_CHAR
+                    sta .char+1
+                    inc .xsav+1
++
+                    rts
+
+reset_loadbar:      lda #LOADBAR_FIRST_CHAR
+                    sta .char+1
+                    lda #0
+                    sta .xsav+1
+                    lda #0x20
+                    ldx #17
+-                   sta vidmem1+0x0231+(10*40)+9,x
+                    dex
+                    bpl -
+                    rts
+
+print_timer:        ldx #2
+-                   lda .timer_init,x
+                    sta vidmem1+0x0231+(0*40)+35,x
+                    dex
+                    bpl -
+                    rts
+.timer_init:        !scr "000"
 ; ==============================================================================
                     !zone SPRITES
                     SPRITES_BAR_X_START = (28*8)+0x18

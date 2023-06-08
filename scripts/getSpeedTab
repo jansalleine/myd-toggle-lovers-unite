@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+$filename = '../doc/sidlist.txt';
+$fileArray = @file($filename);
+
+echo 'songspeedlist:';
+$i = 0;
+
+foreach ($fileArray as $key => $line)
+{
+    $splitLine = explode(";", $line);
+    $speed = trim($splitLine[4]) === '2x' ? '1' : '0';
+
+    if (!($i % 8))
+    {
+        echo PHP_EOL . '                    !byte ';
+        if (!($key == array_key_last($fileArray))) echo $speed . ', ';
+    }
+    else
+    {
+        echo $speed;
+
+        if (!(($i % 8) == 7) && !($key == array_key_last($fileArray)))
+        {
+            echo ', ';
+        }
+    }
+    $i++;
+}
+
+echo PHP_EOL;

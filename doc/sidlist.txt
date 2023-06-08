@@ -2,7 +2,6 @@
 Anticipation;$10B8;$10CF;$2C53;2x
 Boreal Sunrise;$1000;$1003;$2511;1x
 Bring mich nach Hause, Spider;$1000;$1003;$211B;1x
-Cheers & Tributes;$10B8;$10D3;$2C29;2x
 Cute Bundle of Fluff;$1000;$1003;$2049;1x
 Defier of Deadlines;$10B8;$10CF;$2A98;2x
 Euphoria;$10B8;$10CF;$289B;2x

@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+$filename = '../doc/sidlist.txt';
+$fileArray = @file($filename);
+
+$i = 0;
+
+foreach ($fileArray as $line)
+{
+    $splitLine = explode(";", $line);
+
+    echo sprintf('!scr "%s"         ; %02d' . PHP_EOL, substr(str_pad($splitLine[0], 26), 0, 26), $i);
+
+    $i++;
+}

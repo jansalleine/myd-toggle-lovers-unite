@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-$filename = 'sidlist.txt';
+$filename = '../doc/sidlist.txt';
 $fileArray = @file($filename);
 
 $initVals = [];
@@ -18,7 +18,7 @@ foreach ($fileArray as $line)
 echo 'songinit_lo:';
 $i = 0;
 
-foreach ($initVals as $initVal)
+foreach ($initVals as $key => $initVal)
 {
     if (!($i % 8))
     {
@@ -29,7 +29,7 @@ foreach ($initVals as $initVal)
     {
         echo '<0x' . $initVal;
 
-        if (!(($i % 8) == 7))
+        if (!(($i % 8) == 7) && !($key == array_key_last($fileArray)))
         {
             echo ', ';
         }
@@ -40,7 +40,7 @@ foreach ($initVals as $initVal)
 echo PHP_EOL . 'songinit_hi:';
 $i = 0;
 
-foreach ($initVals as $initVal)
+foreach ($initVals as $key => $initVal)
 {
     if (!($i % 8))
     {
@@ -51,7 +51,7 @@ foreach ($initVals as $initVal)
     {
         echo '>0x' . $initVal;
 
-        if (!(($i % 8) == 7))
+        if (!(($i % 8) == 7) && !($key == array_key_last($fileArray)))
         {
             echo ', ';
         }
@@ -62,7 +62,7 @@ foreach ($initVals as $initVal)
 echo PHP_EOL . 'songplay_lo:';
 $i = 0;
 
-foreach ($playVals as $playVal)
+foreach ($playVals as $key => $playVal)
 {
     if (!($i % 8))
     {
@@ -73,7 +73,7 @@ foreach ($playVals as $playVal)
     {
         echo '<0x' . $playVal;
 
-        if (!(($i % 8) == 7))
+        if (!(($i % 8) == 7) && !($key == array_key_last($fileArray)))
         {
             echo ', ';
         }
@@ -84,7 +84,7 @@ foreach ($playVals as $playVal)
 echo PHP_EOL . 'songplay_hi:';
 $i = 0;
 
-foreach ($playVals as $playVal)
+foreach ($playVals as $key => $playVal)
 {
     if (!($i % 8))
     {
@@ -95,7 +95,7 @@ foreach ($playVals as $playVal)
     {
         echo '>0x' . $playVal;
 
-        if (!(($i % 8) == 7))
+        if (!(($i % 8) == 7) && !($key == array_key_last($fileArray)))
         {
             echo ', ';
         }

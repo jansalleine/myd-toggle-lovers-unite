@@ -8,16 +8,14 @@ IMAGE=$(BINDIR)/$(TITLE)_dev.d64
 
 MAIN=main.asm
 
-LOADER=c64loader/config.s \
-c64loader/loaderinit.s \
-c64loader/loader.s \
-c64loader/loadexomizer3.s
+LOADER=krill/install-c64.prg \
+krill/loader-c64.prg \
+krill/loadersymbols-c64.inc
 
 SIDS=sids/64K_Memory_Lane.exo \
 sids/Anticipation.exo \
 sids/Boreal_Sunrise.exo \
 sids/Bring_Mich_Nach_Hause_Spider.exo \
-sids/Cheers_and_Tributes.exo \
 sids/Cute_Bundle_of_Fluff.exo \
 sids/Defier_of_Deadlines.exo \
 sids/Euphoria.exo \
