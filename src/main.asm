@@ -336,6 +336,7 @@ irq14:              lda #CYAN
                     jsr cursor_place
                     jsr cursor_anim
 enable_loadbar:     bit print_loadbar
+enable_timer:       bit timer_increase
                     jsr print_timer
                     +flag_set flag_irq_ready
                     jmp irq_end
@@ -485,6 +486,7 @@ init_vic:           lda #dd00_val0
                     sta vicbank0+0x3FFF
                     rts
 
+
 init_music:         lda #0
 init_addr:          jsr 0x0000
                     ldx #2
@@ -498,7 +500,9 @@ init_addr_2x:       lda #0
                     beq +
                     lda #ENABLE
                     sta music_play_2x
-+                   rts
++                   lda #ENABLE
+                    sta enable_timer
+                    rts
 ; ==============================================================================
                     !zone MAINLOOP
 mainloop:           jsr wait_irq
@@ -514,7 +518,11 @@ enable_keyboard:    bit keyboard_get
 enable_print_win:   bit print_window
                     jmp mainloop
 ; ==============================================================================
-load_song:          lda #'0'
+load_song:          lda #DISABLE
+                    sta enable_timer
+                    lda #50
+                    sta framecounter
+                    lda #'0'
                     sta timer_current
                     sta timer_current+1
                     sta timer_current+2
@@ -557,9 +565,9 @@ load_song:          lda #'0'
 +                   lda #ENABLE
                     sta enable_keyboard
                     sta enable_print_win
-                    jsr reset_loadbar
                     lda #DISABLE
                     sta enable_loadbar
+                    jsr reset_loadbar
                     rts
 filename:           !tx "00"
 ; ==============================================================================
@@ -661,6 +669,33 @@ music_disable:      lda #DISABLE
                     lda #0
                     sta 0xD418
                     rts
+; ==============================================================================
+                    !zone TIMER
+timer_increase:     dec framecounter
+                    beq +
+                    rts
++                   lda timer_init+2
+                    cmp #0x39
+                    bne +++
+                    lda #0x2F
+                    sta timer_init+2
+                    lda timer_init+1
+                    cmp #0x39
+                    bne ++
+                    lda #0x2F
+                    sta timer_init+1
+                    lda timer_init
+                    cmp #0x39
+                    bne +
+                    lda #0x2F
+                    sta timer_init
++                   inc timer_init
+++                  inc timer_init+1
++++                 inc timer_init+2
+                    lda #50
+                    sta framecounter
+                    rts
+framecounter:       !byte 50
 ; ==============================================================================
                     !zone SONGS
                     *= songdata
