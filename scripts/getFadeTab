@@ -1,0 +1,62 @@
+#!/usr/bin/env php
+<?php
+
+$filename = '../doc/sidlist.txt';
+$fileArray = @file($filename);
+
+$fadesHi = [];
+$fadesLo = [];
+
+foreach ($fileArray as $line)
+{
+    $splitLine = explode(";", $line);
+
+    $fadesHi[] = substr(trim(str_replace('$', '', $splitLine[5])), 0, 2);
+    $fadesLo[] = substr(trim(str_replace('$', '', $splitLine[5])), 2, 2);
+}
+
+echo 'songfade_lo:';
+$i = 0;
+
+foreach ($fadesLo as $key => $value)
+{
+    if (!($i % 8))
+    {
+        echo PHP_EOL . '                    !byte ';
+        echo '0x' . $value . ', ';
+    }
+    else
+    {
+        echo '0x' . $value;
+
+        if (!(($i % 8) == 7) && !($key == array_key_last($fadesLo)))
+        {
+            echo ', ';
+        }
+    }
+    $i++;
+}
+
+echo PHP_EOL . 'songfade_hi:';
+$i = 0;
+
+foreach ($fadesHi as $key => $value)
+{
+    if (!($i % 8))
+    {
+        echo PHP_EOL . '                    !byte ';
+        echo '0x' . $value . ', ';
+    }
+    else
+    {
+        echo '0x' . $value;
+
+        if (!(($i % 8) == 7) && !($key == array_key_last($fadesHi)))
+        {
+            echo ', ';
+        }
+    }
+    $i++;
+}
+
+echo PHP_EOL;

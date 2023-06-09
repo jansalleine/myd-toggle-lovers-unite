@@ -94,7 +94,7 @@ getin               = 0xFFE4
 keyscan             = 0xEA87
 ; ==============================================================================
 code_start          = 0x0800
-songdata            = 0x3000
+songdata            = 0x3300
 vicbank0            = 0x4000
 charset0            = vicbank0+0x0000
 charset1            = vicbank0+0x2800
@@ -142,7 +142,6 @@ d018_val1           = <(((vidmem1-vicbank0)/0x400) << 4)+ <(((charset1-vicbank0)
                     *= code_start
                     lda #0x7F
                     sta 0xDC0D
-                    sta 0xDD0D
                     lda #MEMCFG
                     sta 0x01
                     lda #0x0B
@@ -475,6 +474,10 @@ init_vic:           lda #dd00_val0
                     dex
                     bpl -
 
+                    sta 0xD800+0x0231+(1*40)+35
+                    sta 0xD800+0x0231+(1*40)+35+1
+                    sta 0xD800+0x0231+(1*40)+35+2
+
                     lda #BLACK
                     sta 0xD021
 
@@ -484,6 +487,11 @@ init_vic:           lda #dd00_val0
 
 init_music:         lda #0
 init_addr:          jsr 0x0000
+                    ldx #2
+init_time:          lda 0x0000,x
+                    sta timer_current,x
+                    dex
+                    bpl init_time
                     lda #ENABLE
                     sta music_play
 init_addr_2x:       lda #0
@@ -506,11 +514,22 @@ enable_keyboard:    bit keyboard_get
 enable_print_win:   bit print_window
                     jmp mainloop
 ; ==============================================================================
-load_song:          lda #ENABLE
+load_song:          lda #'0'
+                    sta timer_current
+                    sta timer_current+1
+                    sta timer_current+2
+                    sta timer_init
+                    sta timer_init+1
+                    sta timer_init+2
+                    lda #ENABLE
                     sta enable_loadbar
                     ldx songtoload
                     lda songplaylist,x
                     tax
+                    lda songtimes_lo,x
+                    sta init_time+1
+                    lda songtimes_hi,x
+                    sta init_time+2
                     lda songplay_lo,x
                     sta music_play+1
                     sta music_play_2x+1
@@ -527,7 +546,7 @@ load_song:          lda #ENABLE
                     jsr hex2text
                     sta filename
                     stx filename+1
-                    lda #$00
+                    lda #0x00
                     sta loadaddrlo
                     sta loadaddrhi
                     ldx #<filename
@@ -713,7 +732,7 @@ songplaylist:
 songplaylist_end:
 songspeedlist:
                     !byte 0, 1, 0, 0, 0, 1, 1, 0
-                    !byte 0, 0, 0, 0, 0, 0, 0, 0
+                    !byte 0, 0, 1, 0, 0, 0, 0, 0
                     !byte 0, 0, 0, 0, 0, 0, 0, 1
                     !byte 0, 0, 0, 1, 0, 0, 0, 0
                     !byte 0, 0, 0, 0, 0, 0, 0
@@ -746,6 +765,66 @@ songplay_hi:
                     !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x10CF
                     !byte >0x1003, >0x1003, >0x1003, >0x10CF, >0x1003, >0x1003, >0x1003, >0x1003
                     !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
+
+songfade_lo:
+                    !byte 0xDE, 0x5B, 0x55, 0xDE, 0x03, 0x5B, 0x5B, 0x03
+                    !byte 0x55, 0x5B, 0x5B, 0x05, 0x5B, 0xDE, 0xDE, 0x5B
+                    !byte 0x5B, 0xDE, 0xDE, 0x5B, 0xDE, 0x5B, 0x15, 0x55
+                    !byte 0xDE, 0x5B, 0x03, 0x5B, 0xFD, 0xDE, 0x5B, 0xDE
+                    !byte 0xDE, 0xDE, 0xDE, 0x5B, 0xDE, 0xDE, 0xDE
+songfade_hi:
+                    !byte 0x10, 0x12, 0x11, 0x10, 0x11, 0x12, 0x12, 0x11
+                    !byte 0x11, 0x11, 0x12, 0x11, 0x11, 0x10, 0x10, 0x11
+                    !byte 0x11, 0x10, 0x10, 0x11, 0x10, 0x11, 0x11, 0x12
+                    !byte 0x10, 0x11, 0x11, 0x12, 0x10, 0x10, 0x11, 0x10
+                    !byte 0x10, 0x10, 0x10, 0x11, 0x10, 0x10, 0x10
+songtimes:
+                    !scr "179"
+                    !scr "161"
+                    !scr "140"
+                    !scr "104"
+                    !scr "113"
+                    !scr "150"
+                    !scr "122"
+                    !scr "210"
+                    !scr "059"
+                    !scr "215"
+                    !scr "157"
+                    !scr "113"
+                    !scr "195"
+                    !scr "307"
+                    !scr "184"
+                    !scr "150"
+                    !scr "169"
+                    !scr "046"
+                    !scr "127"
+                    !scr "250"
+                    !scr "054"
+                    !scr "212"
+                    !scr "104"
+                    !scr "223"
+                    !scr "177"
+                    !scr "219"
+                    !scr "050"
+                    !scr "245"
+                    !scr "052"
+                    !scr "061"
+                    !scr "094"
+                    !scr "244"
+                    !scr "198"
+                    !scr "134"
+                    !scr "058"
+                    !scr "175"
+                    !scr "174"
+                    !scr "173"
+                    !scr "222"
+
+songtimes_lo:       !for i, 0, 38 {
+                        !byte <(songtimes+(i*3))
+                    }
+songtimes_hi:       !for i, 0, 38 {
+                        !byte >(songtimes+(i*3))
+                    }
 ; ==============================================================================
                     !zone PRINT
 print_window:       lda songwindowtop
@@ -826,12 +905,15 @@ reset_loadbar:      lda #LOADBAR_FIRST_CHAR
                     rts
 
 print_timer:        ldx #2
--                   lda .timer_init,x
+-                   lda timer_init,x
                     sta vidmem1+0x0231+(0*40)+35,x
+                    lda timer_current,x
+                    sta vidmem1+0x0231+(1*40)+35,x
                     dex
                     bpl -
                     rts
-.timer_init:        !scr "000"
+timer_init:         !scr "000"
+timer_current:      !scr "000"
 ; ==============================================================================
                     !zone SPRITES
                     SPRITES_BAR_X_START = (28*8)+0x18

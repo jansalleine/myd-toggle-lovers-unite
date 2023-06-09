@@ -1,5 +1,5 @@
-; repository version 194, built on Tue, 06 Jun 2023 22:04:44 +0200 for project "loader" using
-; make PLATFORM=c64 prg INSTALL=1000 RESIDENT=0400 ZP=e8 PROJECT=
+; repository version 194, built on Thu, 08 Jun 2023 16:15:15 +0200 for project "loader" using
+; make PLATFORM=c64 prg INSTALL=1000 RESIDENT=3000 ZP=e8 PROJECT=
 
 ; configuration
 config_ALLOW_2_MHZ_ON_C128      = 0
@@ -39,5 +39,5 @@ loader_zp_last                  = $fa
 ; install $1000-$2b53
 install                         = $1000
 
-; resident $0400-$06f1
-loadcompd                       = $0400
+; resident $3000-$32f1
+loadcompd                       = $3000

@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+$filename = '../doc/sidlist.txt';
+$fileArray = @file($filename);
+
+echo 'songtimes:' . PHP_EOL;
+
+foreach ($fileArray as $line)
+{
+    $splitLine = explode(";", $line);
+
+    echo sprintf('                    !scr "%s"' . PHP_EOL, trim($splitLine[6]));
+}
