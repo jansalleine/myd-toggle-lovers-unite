@@ -337,6 +337,9 @@ irq14:              lda #CYAN
                     jsr cursor_anim
 enable_loadbar:     bit print_loadbar
 enable_timer:       bit timer_increase
+enable_check_end:   bit timer_check_end
+enable_song_end:    bit song_end
+enable_song_fade:   bit song_fadeout
                     jsr print_timer
                     +flag_set flag_irq_ready
                     jmp irq_end
@@ -502,6 +505,7 @@ init_addr_2x:       lda #0
                     sta music_play_2x
 +                   lda #ENABLE
                     sta enable_timer
+                    sta enable_check_end
                     rts
 ; ==============================================================================
                     !zone MAINLOOP
@@ -510,7 +514,7 @@ loadflag:           lda #1
                     beq +
                     lda #0
                     sta loadflag+1
-                    jsr music_disable
+                    jsr song_disable
                     jsr load_song
                     jsr init_music
 +
@@ -550,6 +554,14 @@ load_song:          lda #DISABLE
                     sta init_addr+1
                     lda songspeedlist,x
                     sta init_addr_2x+1
+                    lda songlooplist,x
+                    sta song_end+1
+                    lda songfade_lo,x
+                    sta song_fadeout+1
+                    sta song_fadeout_dest+1
+                    lda songfade_hi,x
+                    sta song_fadeout+2
+                    sta song_fadeout_dest+2
                     txa
                     jsr hex2text
                     sta filename
@@ -662,14 +674,6 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     sta loadflag+1
                     rts
 ; ==============================================================================
-                    !zone MUSIC
-music_disable:      lda #DISABLE
-                    sta music_play
-                    sta music_play_2x
-                    lda #0
-                    sta 0xD418
-                    rts
-; ==============================================================================
                     !zone TIMER
 timer_increase:     dec framecounter
                     beq +
@@ -696,8 +700,76 @@ timer_increase:     dec framecounter
                     sta framecounter
                     rts
 framecounter:       !byte 50
+
+timer_check_end:    lda timer_init+2
+                    cmp timer_current+2
+                    bne +
+                    lda timer_init+1
+                    cmp timer_current+1
+                    bne +
+                    lda timer_init
+                    cmp timer_current
+                    bne +
+                    lda #ENABLE
+                    sta enable_song_end
++                   rts
 ; ==============================================================================
-                    !zone SONGS
+                    !zone SONGSCODE
+song_end:           lda #0x00
+                    bne +
+                    ldx songplaying
+                    inx
+                    lda songplaylist,x
+                    sta songtoload
+                    lda #1
+                    sta loadflag+1
+                    rts
++                   lda #ENABLE
+                    sta enable_song_fade
+                    lda #DISABLE
+                    sta enable_song_end
+                    rts
+
+song_fadeout:       lda 0x0000
+                    and #0xF0
+                    ora volume
+song_fadeout_dest:  sta 0x0000
+.enable_delay:      jmp .fade_delay
+                    ldx volume
+                    lda fade_curve,x
+                    sta .fade_delay+1
+                    lda #ENABLE_JMP
+                    sta .enable_delay
+                    dex
+                    bpl +
+                    lda #DISABLE
+                    sta enable_song_fade
+                    lda #ENABLE
+                    sta enable_song_end
+                    lda #0
+                    sta song_end+1
+                    ldx #0x0F
++                   stx volume
+                    rts
+.fade_delay:        lda #0
+                    beq +
+                    dec .fade_delay+1
+                    rts
++                   lda #DISABLE
+                    sta .enable_delay
+                    rts
+fade_curve:         !byte 0x00, 0x30, 0x30, 0x28, 0x28, 0x28, 0x20, 0x20
+                    !byte 0x18, 0x18, 0x10, 0x10, 0x08, 0x08, 0x08, 0x08
+volume:             !byte 0x0F
+
+song_disable:       lda #DISABLE
+                    sta music_play
+                    sta music_play_2x
+                    lda #0
+                    sta 0xD418
+                    rts
+; ==============================================================================
+                    !zone SONGSDATA
                     *= songdata
                     ;!scr"01234567890123456789012345"
 songtitles:         !scr "64K Memory Lane           "         ; 00
@@ -860,6 +932,14 @@ songtimes_lo:       !for i, 0, 38 {
 songtimes_hi:       !for i, 0, 38 {
                         !byte >(songtimes+(i*3))
                     }
+songlooplist:
+                    !byte 1, 1, 1, 1, 1, 0, 0, 0
+                    !byte 1, 1, 0, 1, 1, 1, 1, 1
+                    !byte 1, 1, 1, 0, 1, 0, 0, 0
+                    !byte 1, 1, 1, 0, 1, 0, 1, 1
+                    !byte 1, 1, 1, 0, 0, 0, 1
+
+
 ; ==============================================================================
                     !zone PRINT
 print_window:       lda songwindowtop
@@ -911,11 +991,13 @@ print_window:       lda songwindowtop
                     rts
 .current_index:     !byte 0x00
 
-                    LOADBAR_SPEED = 2
                     LOADBAR_FIRST_CHAR = 247
                     LOADBAR_LAST_CHAR = 255
 print_loadbar:
 .xsav:              ldx #0
+                    cpx #18
+                    bne .char
+                    rts
 .char:              lda #LOADBAR_FIRST_CHAR
                     sta vidmem1+0x0231+(10*40)+9,x
                     inc .char+1
