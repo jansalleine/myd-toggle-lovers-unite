@@ -2,7 +2,7 @@
 Anticipation;$10B8;$10CF;$2C53;2x;$125B;161;loop
 Boreal Sunrise;$1000;$1003;$2511;1x;$1155;140;loop
 Bring mich nach Hause, Spider;$1000;$1003;$211B;1x;$10DE;105;loop
-Cute Bundle of Fluff;$1000;$1003;$2049;1x;$1103;113;loop
+Cute Bundle of Fluff;$1000;$1003;$2049;1x;$11A6;113;loop
 Defier of Deadlines;$10B8;$10CF;$2A98;2x;$125B;150;end
 Euphoria;$10B8;$10CF;$289B;2x;$125B;123;end
 Fireflies;$1000;$1003;$294E;1x;$1103;211;end

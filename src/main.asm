@@ -1,6 +1,6 @@
                     !cpu 6510
 
-DEBUG = 0
+DEBUG = 1
 RELEASE = 1
 ; ==============================================================================
 ENABLE              = 0x20
@@ -524,6 +524,9 @@ enable_print_win:   bit print_window
 ; ==============================================================================
 load_song:          lda #DISABLE
                     sta enable_timer
+                    sta enable_check_end
+                    sta enable_song_end
+                    sta enable_song_fade
                     lda #50
                     sta framecounter
                     lda #'0'
@@ -710,6 +713,10 @@ timer_check_end:    lda timer_init+2
                     lda timer_init
                     cmp timer_current
                     bne +
+                    lda #DISABLE
+                    sta enable_timer
+                    lda #DISABLE
+                    sta enable_check_end
                     lda #ENABLE
                     sta enable_song_end
 +                   rts
@@ -719,8 +726,8 @@ song_end:           lda #0x00
                     bne +
                     ldx songplaying
                     inx
-                    lda songplaylist,x
-                    sta songtoload
+                    stx songtoload
+                    stx songplaying
                     lda #1
                     sta loadflag+1
                     rts
@@ -836,6 +843,13 @@ songplaylist:
                     !byte 31, 14, 21, 11, 28, 8, 20, 6
                     !byte 1, 32, 7, 2, 13, 5, 35, 18
                     !byte 17, 33, 0, 34, 9, 3, 29
+
+                    !if DEBUG=1 {
+                        *= songplaylist
+                        !for i, 0, 38 {
+                            !byte i
+                        }
+                    }
 songplaylist_end:
 songspeedlist:
                     !byte 0, 1, 0, 0, 0, 1, 1, 0
@@ -874,7 +888,7 @@ songplay_hi:
                     !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
 
 songfade_lo:
-                    !byte 0xDE, 0x5B, 0x55, 0xDE, 0x03, 0x5B, 0x5B, 0x03
+                    !byte 0xDE, 0x5B, 0x55, 0xDE, 0xA6, 0x5B, 0x5B, 0x03
                     !byte 0x55, 0x5B, 0x5B, 0x05, 0x5B, 0xDE, 0xDE, 0x5B
                     !byte 0x5B, 0xDE, 0xDE, 0x5B, 0xDE, 0x5B, 0x15, 0x55
                     !byte 0xDE, 0x5B, 0x03, 0x5B, 0xFD, 0xDE, 0x5B, 0xDE
