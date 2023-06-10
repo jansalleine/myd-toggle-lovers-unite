@@ -1,6 +1,6 @@
                     !cpu 6510
 
-DEBUG = 1
+DEBUG = 0
 RELEASE = 1
 ; ==============================================================================
 ENABLE              = 0x20
@@ -82,6 +82,7 @@ zp_temp0_hi         = zp_temp0+1
 zp_temp1            = zp_temp0_hi+1
 zp_temp1_lo         = zp_temp1
 zp_temp1_hi         = zp_temp1+1
+flag_irq_top        = 0xFB
 ; ==============================================================================
 KEY_CRSRUP          = 0x91
 KEY_CRSRDOWN        = 0x11
@@ -206,6 +207,7 @@ music_play_2x:      bit 0x0000
                     !if DEBUG=1 {
                         dec 0xD020
                     }
+                    +flag_set flag_irq_top
                     jmp irq_end
 
 irq01:              nop
@@ -497,10 +499,12 @@ init_time:          lda 0x0000,x
                     sta timer_current,x
                     dex
                     bpl init_time
+                    jsr wait_irq_top
                     lda #ENABLE
                     sta music_play
 init_addr_2x:       lda #0
                     beq +
+                    jsr wait_irq_top
                     lda #ENABLE
                     sta music_play_2x
 +                   lda #ENABLE
@@ -597,6 +601,10 @@ nmi:                lda #0x37               ; restore 0x01 standard value
 wait_irq:           +flag_clear flag_irq_ready
 .wait_irq:          +flag_get flag_irq_ready
                     beq .wait_irq
+                    rts
+wait_irq_top:       +flag_clear flag_irq_top
+.wait_irq_top:      +flag_get flag_irq_top
+                    beq .wait_irq_top
                     rts
 ; ==============================================================================
                     !zone HEX2TEXT
@@ -888,57 +896,58 @@ songplay_hi:
                     !byte >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003, >0x1003
 
 songfade_lo:
-                    !byte 0xDE, 0x5B, 0x55, 0xDE, 0xA6, 0x5B, 0x5B, 0x03
-                    !byte 0x55, 0x5B, 0x5B, 0x05, 0x5B, 0xDE, 0xDE, 0x5B
-                    !byte 0x5B, 0xDE, 0xDE, 0x5B, 0xDE, 0x5B, 0x15, 0x55
-                    !byte 0xDE, 0x5B, 0x03, 0x5B, 0xFD, 0xDE, 0x5B, 0xDE
-                    !byte 0xDE, 0xDE, 0xDE, 0x5B, 0xDE, 0xDE, 0xDE
+                    !byte 0xDE, 0xFE, 0xF8, 0xDE, 0xA6, 0xFE, 0xFE, 0xA6
+                    !byte 0xF8, 0xFE, 0xFE, 0x9C, 0xFE, 0xDE, 0xDE, 0xFE
+                    !byte 0xFE, 0xDE, 0xDE, 0xFE, 0xDE, 0xFE, 0x15, 0x55
+                    !byte 0xDE, 0xFE, 0xA6, 0xFE, 0x94, 0xDE, 0xFE, 0xDE
+                    !byte 0xDE, 0xDE, 0xDE, 0xFE, 0xDE, 0xDE, 0xDE
 songfade_hi:
                     !byte 0x10, 0x12, 0x11, 0x10, 0x11, 0x12, 0x12, 0x11
                     !byte 0x11, 0x11, 0x12, 0x11, 0x11, 0x10, 0x10, 0x11
                     !byte 0x11, 0x10, 0x10, 0x11, 0x10, 0x11, 0x11, 0x12
-                    !byte 0x10, 0x11, 0x11, 0x12, 0x10, 0x10, 0x11, 0x10
+                    !byte 0x10, 0x11, 0x11, 0x12, 0x11, 0x10, 0x11, 0x10
                     !byte 0x10, 0x10, 0x10, 0x11, 0x10, 0x10, 0x10
+
 songtimes:
-                    !scr "179"
+                    !scr "180"
                     !scr "161"
                     !scr "140"
-                    !scr "104"
+                    !scr "105"
                     !scr "113"
                     !scr "150"
-                    !scr "122"
-                    !scr "210"
+                    !scr "123"
+                    !scr "211"
                     !scr "059"
                     !scr "215"
-                    !scr "157"
-                    !scr "113"
+                    !scr "156"
+                    !scr "114"
                     !scr "195"
                     !scr "307"
                     !scr "184"
                     !scr "150"
-                    !scr "169"
+                    !scr "171"
                     !scr "046"
-                    !scr "127"
-                    !scr "250"
-                    !scr "054"
-                    !scr "212"
-                    !scr "104"
-                    !scr "223"
+                    !scr "128"
+                    !scr "248"
+                    !scr "055"
+                    !scr "213"
+                    !scr "106"
+                    !scr "222"
                     !scr "177"
                     !scr "219"
                     !scr "050"
-                    !scr "245"
+                    !scr "241"
                     !scr "052"
-                    !scr "061"
-                    !scr "094"
-                    !scr "244"
+                    !scr "063"
+                    !scr "096"
+                    !scr "249"
                     !scr "198"
                     !scr "134"
                     !scr "058"
-                    !scr "175"
                     !scr "174"
                     !scr "173"
-                    !scr "222"
+                    !scr "173"
+                    !scr "223"
 
 songtimes_lo:       !for i, 0, 38 {
                         !byte <(songtimes+(i*3))

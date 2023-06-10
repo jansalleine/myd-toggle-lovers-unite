@@ -1,39 +1,39 @@
 64K Memory Lane;$1000;$1003;$2D32;1x;$10DE;180;loop
-Anticipation;$10B8;$10CF;$2C53;2x;$125B;161;loop
-Boreal Sunrise;$1000;$1003;$2511;1x;$1155;140;loop
+Anticipation;$10B8;$10CF;$2C53;2x;$12FE;161;loop
+Boreal Sunrise;$1000;$1003;$2511;1x;$11F8;140;loop
 Bring mich nach Hause, Spider;$1000;$1003;$211B;1x;$10DE;105;loop
 Cute Bundle of Fluff;$1000;$1003;$2049;1x;$11A6;113;loop
-Defier of Deadlines;$10B8;$10CF;$2A98;2x;$125B;150;end
-Euphoria;$10B8;$10CF;$289B;2x;$125B;123;end
-Fireflies;$1000;$1003;$294E;1x;$1103;211;end
-Flowing Slowly (extended);$1000;$1003;$229E;1x;$1155;059;loop
-Glacial Blues;$1000;$1003;$29ED;1x;$115B;215;loop
-Homecoming;$10B8;$10CF;$2BC1;2x;$125B;156;end
-Irrlicht;$1000;$1003;$1ED9;1x;$1105;114;loop
-Jaded;$1000;$1003;$2752;1x;$115B;195;loop
+Defier of Deadlines;$10B8;$10CF;$2A98;2x;$12FE;150;end
+Euphoria;$10B8;$10CF;$289B;2x;$12FE;123;end
+Fireflies;$1000;$1003;$294E;1x;$11A6;211;end
+Flowing Slowly (extended);$1000;$1003;$229E;1x;$11F8;059;loop
+Glacial Blues;$1000;$1003;$29ED;1x;$11FE;215;loop
+Homecoming;$10B8;$10CF;$2BC1;2x;$12FE;156;end
+Irrlicht;$1000;$1003;$1ED9;1x;$119C;114;loop
+Jaded;$1000;$1003;$2752;1x;$11FE;195;loop
 Kicks Like a M.U.L.E.;$1000;$1003;$23F2;1x;$10DE;307;loop
 Little Heart;$1000;$1003;$1FFE;1x;$10DE;184;loop
-Maniac Marstall (LuheCon Theme);$1000;$1003;$2D74;1x;$115B;150;loop
-Mayday! in Monsterland;$1000;$1003;$289A;1x;$115B;171;loop
+Maniac Marstall (LuheCon Theme);$1000;$1003;$2D74;1x;$11FE;150;loop
+Mayday! in Monsterland;$1000;$1003;$289A;1x;$11FE;171;loop
 MuckelSID;$1000;$1003;$1CCC;1x;$10DE;046;loop
 Nappy Go Lucky;$1000;$1003;$247E;1x;$10DE;128;loop
-Nightlights;$1000;$1003;$2E0F;1x;$115B;248;end
+Nightlights;$1000;$1003;$2E0F;1x;$11FE;248;end
 Notch It;$1000;$1003;$1DF9;1x;$10DE;055;loop
-Oakyard Memories;$1000;$1003;$2ADF;1x;$115B;213;end
+Oakyard Memories;$1000;$1003;$2ADF;1x;$11FE;213;end
 Pantheon;$1000;$1003;$214A;1x;$1115;106;end
 Pompeii;$10B8;$10CF;$2B47;2x;$1255;222;end
 Quietus;$1000;$1003;$2A10;1x;$10DE;177;loop
-Redshift Infinite;$1000;$1003;$2D83;1x;$115B;219;loop
-Rogaland Revisited;$1000;$1003;$1F5C;1x;$1103;050;loop
-Selenopolis 2.0;$10B8;$10CF;$28AE;2x;$125B;241;end
-Sparkle;$1000;$1003;$1F2C;1x;$10FD;052;loop
+Redshift Infinite;$1000;$1003;$2D83;1x;$11FE;219;loop
+Rogaland Revisited;$1000;$1003;$1F5C;1x;$11A6;050;loop
+Selenopolis 2.0;$10B8;$10CF;$28AE;2x;$12FE;241;end
+Sparkle;$1000;$1003;$1F2C;1x;$1194;052;loop
 Supremacy Intro;$1000;$1003;$1EA6;1x;$10DE;063;end
-Tao Tao;$1000;$1003;$280F;1x;$115B;096;loop
+Tao Tao;$1000;$1003;$280F;1x;$11FE;096;loop
 Tidal Waves;$1000;$1003;$23CE;1x;$10DE;249;loop
 Transmission 64;$1000;$1003;$23FB;1x;$10DE;198;loop
 Unity;$1000;$1003;$23B3;1x;$10DE;134;loop
 Ursa Minor;$1000;$1003;$1E9F;1x;$10DE;058;loop
-Valiant Adventurer 1983;$1000;$1003;$2746;1x;$115B;174;end
+Valiant Adventurer 1983;$1000;$1003;$2746;1x;$11FE;174;end
 Welc0me Aboard;$1000;$1003;$22B2;1x;$10DE;173;end
 Wieselflink;$1000;$1003;$2662;1x;$10DE;173;end
 Wintry Haze;$1000;$1003;$2420;1x;$10DE;223;loop
