@@ -751,6 +751,7 @@ song_end:           lda #0x00
                     sta enable_song_fade
                     lda #DISABLE
                     sta enable_song_end
+                    sta enable_keyboard
                     rts
 
 song_fadeout:       lda 0x0000
@@ -854,12 +855,11 @@ songcolmem_hi:      !for i, 0, 9 {
                         !byte >(0xD800+0x0231+(i*40))
                     }
 songplaylist:
-                    !byte 22, 8, 5, 15, 0, 37, 27, 10
-                    !byte 38, 1, 29, 35, 7, 12, 25, 20
-                    !byte 36, 21, 19, 28, 2, 30, 17, 13
-                    !byte 9, 3, 14, 33, 34, 16, 31, 4
-                    !byte 32, 23, 11, 24, 18, 6, 26
-
+                    !byte 26, 37, 30, 2, 8, 22, 10, 16
+                    !byte 11, 28, 31, 12, 7, 24, 0, 19
+                    !byte 18, 21, 6, 15, 25, 38, 14, 23
+                    !byte 32, 1, 9, 27, 34, 13, 17, 5
+                    !byte 36, 20, 4, 33, 29, 35, 3
 
                     !if DEBUG=1 {
                         *= songplaylist
@@ -955,7 +955,7 @@ songtimes:
                     !scr "058"
                     !scr "174"
                     !scr "173"
-                    !scr "173"
+                    !scr "172"
                     !scr "223"
 
 songtimes_lo:       !for i, 0, 38 {

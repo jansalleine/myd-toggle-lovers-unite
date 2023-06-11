@@ -35,5 +35,5 @@ Unity;$1000;$1003;$23B3;1x;$10DE;134;loop
 Ursa Minor;$1000;$1003;$1E9F;1x;$10DE;058;loop
 Valiant Adventurer 1983;$1000;$1003;$2746;1x;$11FE;174;end
 Welc0me Aboard;$1000;$1003;$22B2;1x;$10DE;173;end
-Wieselflink;$1000;$1003;$2662;1x;$10DE;173;end
+Wieselflink;$1000;$1003;$2662;1x;$10DE;172;end
 Wintry Haze;$1000;$1003;$2420;1x;$10DE;223;loop
