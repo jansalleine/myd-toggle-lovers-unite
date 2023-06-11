@@ -473,6 +473,9 @@ init_vic:           lda #dd00_val0
                     !for i, 0, 9 {
                         sta 0xD800+0x0230+(i*40)
                     }
+                    sta 0xD800+0x0231+(0*40)+35
+                    sta 0xD800+0x0231+(0*40)+36
+                    sta 0xD800+0x0231+(0*40)+37
 
                     ldx #16
                     lda #PINK
@@ -531,6 +534,8 @@ load_song:          lda #DISABLE
                     sta enable_check_end
                     sta enable_song_end
                     sta enable_song_fade
+                    lda #0x0F
+                    sta volume
                     lda #50
                     sta framecounter
                     lda #'0'
@@ -731,15 +736,18 @@ timer_check_end:    lda timer_init+2
 ; ==============================================================================
                     !zone SONGSCODE
 song_end:           lda #0x00
-                    bne +
+                    bne ++
                     ldx songplaying
                     inx
-                    stx songtoload
+                    cpx #39
+                    bne +
+                    ldx #0
++                   stx songtoload
                     stx songplaying
                     lda #1
                     sta loadflag+1
                     rts
-+                   lda #ENABLE
+++                  lda #ENABLE
                     sta enable_song_fade
                     lda #DISABLE
                     sta enable_song_end
@@ -846,11 +854,12 @@ songcolmem_hi:      !for i, 0, 9 {
                         !byte >(0xD800+0x0231+(i*40))
                     }
 songplaylist:
-                    !byte 38, 4, 26, 25, 15, 12, 36, 27
-                    !byte 30, 22, 24, 23, 16, 19, 10, 37
-                    !byte 31, 14, 21, 11, 28, 8, 20, 6
-                    !byte 1, 32, 7, 2, 13, 5, 35, 18
-                    !byte 17, 33, 0, 34, 9, 3, 29
+                    !byte 22, 8, 5, 15, 0, 37, 27, 10
+                    !byte 38, 1, 29, 35, 7, 12, 25, 20
+                    !byte 36, 21, 19, 28, 2, 30, 17, 13
+                    !byte 9, 3, 14, 33, 34, 16, 31, 4
+                    !byte 32, 23, 11, 24, 18, 6, 26
+
 
                     !if DEBUG=1 {
                         *= songplaylist

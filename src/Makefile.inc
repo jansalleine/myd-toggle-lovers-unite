@@ -9,4 +9,4 @@ RM=rm -f
 CP=cp -v
 
 EMU?=vice
-EMUFLAGS?=-VICIIborders 2
+EMUFLAGS?=-VICIIborders 0
