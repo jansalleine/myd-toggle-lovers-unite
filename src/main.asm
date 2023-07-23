@@ -550,6 +550,12 @@ load_song:          lda #DISABLE
                     lda #ENABLE
                     sta enable_loadbar
                     ldx songtoload
+                    stx songselected
+                    lda song_windowpos,x
+                    sta songwindowtop
+                    jsr cursor_delete
+                    lda song_cursorpos,x
+                    sta cursorpos
                     lda songplaylist,x
                     tax
                     lda songtimes_lo,x
@@ -973,6 +979,31 @@ songlooplist:
                     !byte 1, 1, 1, 0, 1, 0, 1, 1
                     !byte 1, 1, 1, 0, 0, 0, 1
 
+song_windowpos:     !for i, 0, 9 {
+                        !byte 0
+                    }
+                    !for i, 10, 19 {
+                        !byte 10
+                    }
+                    !for i, 20, 29 {
+                        !byte 20
+                    }
+                    !for i, 30, 38 {
+                        !byte 30
+                    }
+
+song_cursorpos:     !for i, 0, 9 {
+                        !byte i
+                    }
+                    !for i, 0, 9 {
+                        !byte i
+                    }
+                    !for i, 0, 9 {
+                        !byte i
+                    }
+                    !for i, 0, 8 {
+                        !byte i
+                    }
 
 ; ==============================================================================
                     !zone PRINT
