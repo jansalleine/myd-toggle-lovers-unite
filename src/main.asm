@@ -131,7 +131,20 @@ d018_val1           = <(((vidmem1-vicbank0)/0x400) << 4)+ <(((charset1-vicbank0)
                     *= bitmap0
                     !bin "gfx/hires_top.prg",(13*40)*8,2
                     *= vidmem0
-                    !bin "gfx/hires_top.prg",(13*40),0x1F40+2
+                    ;!bin "gfx/hires_top.prg",(13*40),0x1F40+2
+!by $70,$00,$00,$00,$00,$00,$00,$00,$00,$00,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$00,$00,$50,$30,$D0,$F0,$A0,$80,$70,$70,$70,$70,$70
+!by $F0,$00,$1B,$13,$13,$13,$13,$13,$1B,$00,$F0,$00,$F0,$F0,$F0,$F0,$F0,$F0,$00,$F0,$F0,$F0,$F0,$F0,$F0,$00,$F0,$00,$1B,$10,$30,$D0,$F0,$A0,$80,$00,$F0,$F0,$F0,$F0
+!by $A0,$A0,$B0,$1B,$B0,$13,$B0,$1B,$B0,$00,$10,$00,$A0,$A0,$A0,$A0,$A0,$10,$00,$A0,$A0,$A0,$A0,$A0,$10,$00,$A0,$A0,$B0,$13,$00,$D0,$F0,$A0,$10,$00,$A0,$A0,$A0,$A0
+!by $80,$80,$80,$B0,$00,$13,$00,$B0,$00,$10,$13,$10,$80,$80,$80,$80,$10,$13,$10,$80,$80,$80,$80,$10,$13,$10,$80,$80,$00,$13,$00,$D0,$F0,$10,$13,$10,$80,$80,$80,$80
+!by $20,$20,$20,$20,$00,$13,$00,$00,$10,$1B,$B0,$1B,$10,$00,$00,$10,$1B,$B0,$1B,$10,$00,$00,$10,$1B,$B0,$1B,$10,$20,$00,$13,$00,$00,$10,$1B,$B0,$1B,$10,$20,$20,$20
+!by $90,$90,$90,$00,$00,$13,$00,$1B,$13,$B0,$00,$B0,$13,$10,$1B,$13,$B0,$00,$B0,$13,$10,$1B,$13,$B0,$00,$B0,$13,$10,$00,$13,$00,$1B,$13,$B0,$1B,$13,$13,$10,$90,$90
+!by $60,$60,$60,$00,$1B,$13,$00,$B0,$1B,$10,$00,$10,$1B,$B0,$B0,$1B,$10,$10,$00,$13,$B0,$B0,$1B,$10,$10,$00,$13,$B0,$1B,$13,$00,$B0,$1B,$10,$B0,$B0,$B0,$B0,$00,$60
+!by $B0,$B0,$B0,$B0,$B0,$1B,$10,$00,$B0,$1B,$13,$1B,$B0,$00,$00,$B0,$1B,$1B,$00,$13,$00,$B0,$B0,$1B,$1B,$00,$13,$00,$B0,$1B,$10,$00,$B0,$1B,$13,$1B,$00,$00,$00,$B0
+!by $40,$40,$40,$40,$40,$B0,$B0,$B0,$40,$B0,$1B,$B0,$40,$40,$40,$40,$B0,$B0,$00,$13,$00,$40,$40,$B0,$B0,$00,$13,$00,$E0,$B0,$B0,$00,$F0,$B0,$1B,$B0,$40,$4A,$4A,$40
+!by $E0,$E0,$E0,$E0,$E0,$E0,$00,$E0,$E0,$00,$B0,$E0,$E0,$E0,$E0,$E0,$E0,$00,$1B,$1B,$00,$E0,$E0,$E0,$00,$1B,$1B,$00,$E0,$50,$00,$00,$F0,$00,$B0,$E0,$E0,$AE,$AE,$E0
+!by $50,$50,$50,$50,$50,$50,$50,$50,$50,$00,$50,$50,$50,$50,$50,$50,$50,$50,$B0,$B0,$50,$50,$50,$50,$50,$B0,$B0,$50,$E0,$50,$30,$D0,$F0,$00,$80,$50,$50,$50,$50,$50
+!by $30,$30,$34,$34,$34,$34,$34,$34,$30,$30,$34,$34,$34,$34,$34,$34,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30
+!by $30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30
                     *= charset1
                     !bin "gfx/charset.chr"
                     *= vidmem1
@@ -637,8 +650,7 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     jsr getin
                     bne +
                     jmp .key_exit
-+                   ;!if DEBUG=1 { sta vidmem0+3 }
-                    cmp #KEY_CRSRUP
++                   cmp #KEY_CRSRUP
                     bne +
                     jmp .crsr_up
 +                   cmp #KEY_CRSRDOWN
@@ -646,13 +658,12 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     jmp .crsr_down
 +                   cmp #KEY_RETURN
                     bne +
-                    jmp .return ; select
+                    jmp .return
 +                   cmp #KEY_STOP
                     bne +
                     jmp .key_exit ; pause
 +
-.key_exit:
-                    !if DEBUG=1 { inc 0xD020 }
+.key_exit:          !if DEBUG=1 { inc 0xD020 }
                     rts
 .crsr_up:           lda cursorpos
                     beq +
@@ -794,6 +805,134 @@ song_disable:       lda #DISABLE
                     lda #0
                     sta 0xD418
                     rts
+; ==============================================================================
+                    !zone CURSOR
+                    CRSR_CHAR = 64
+                    CRSR_CHAR_INV = 192
+                    CRSR_ANIM_SPEED = 6
+cursor_place:       ldx cursorpos
+                    lda cursorvidmem_lo,x
+                    sta .crsr_vid_dest+1
+                    lda cursorvidmem_hi,x
+                    sta .crsr_vid_dest+2
+.crsr_char_mod:     lda #CRSR_CHAR
+.crsr_vid_dest:     sta 0x0000
+                    rts
+
+cursor_anim:        lda #CRSR_ANIM_SPEED
+                    beq +
+                    dec cursor_anim+1
+                    rts
++                   lda #CRSR_ANIM_SPEED
+                    sta cursor_anim+1
+                    lda .crsr_char_mod+1
+                    cmp #0x20
+                    beq +
+                    eor #(CRSR_CHAR XOR CRSR_CHAR_INV)
+                    sta .crsr_char_mod+1
++                   jmp .crsr_char_mod
+
+cursor_delete:      lda #0x20
+                    jmp .crsr_vid_dest
+
+cursorpos:          !byte 0x00
+cursorvidmem_lo:    !for i, 0, 9 {
+                        !byte <(vidmem1+0x0230+(i*40))
+                    }
+cursorvidmem_hi:    !for i, 0, 9 {
+                        !byte >(vidmem1+0x0230+(i*40))
+                    }
+; ==============================================================================
+                    !zone PRINT
+print_window:       lda songwindowtop
+                    sta .current_index
+                    clc
+                    adc #10
+                    sta .cmp_end+1
+                    lda songplaying
+                    sta .cmp_playing+1
+                    lda .current_index
+.loop:              tax
+                    lda songplaylist,x
+                    tax
+                    lda songtitles_lo,x
+                    sta .src+1
+                    lda songtitles_hi,x
+                    sta .src+2
+.vidmempointer:     ldy #0
+                    lda songvidmem_lo,y
+                    sta .dest+1
+                    lda songvidmem_hi,y
+                    sta .dest+2
+                    lda songcolmem_lo,y
+                    sta .coldest+1
+                    lda songcolmem_hi,y
+                    sta .coldest+2
+                    lda .current_index
+.cmp_playing:       cmp #0
+                    bne +
+                    ldx #LIGHT_GREEN
+                    !byte 0x2C
++                   ldx #YELLOW
+                    ldy #25
+-                   txa
+.coldest:           sta 0x0000,y
+.src:               lda 0x0000,y
+.dest:              sta 0x0000,y
+                    dey
+                    bpl -
+                    inc .vidmempointer+1
+                    inc .current_index
+                    lda .current_index
+.cmp_end:           cmp #0
+                    bne .loop
+                    lda #0
+                    sta .vidmempointer+1
+                    lda #DISABLE
+                    sta enable_print_win
+                    rts
+.current_index:     !byte 0x00
+
+                    LOADBAR_FIRST_CHAR = 247
+                    LOADBAR_LAST_CHAR = 255
+print_loadbar:
+.xsav:              ldx #0
+                    cpx #18
+                    bne .char
+                    rts
+.char:              lda #LOADBAR_FIRST_CHAR
+                    sta vidmem1+0x0231+(10*40)+9,x
+                    inc .char+1
+                    lda .char+1
+                    cmp #0
+                    bne +
+                    lda #LOADBAR_FIRST_CHAR
+                    sta .char+1
+                    inc .xsav+1
++
+                    rts
+
+reset_loadbar:      lda #LOADBAR_FIRST_CHAR
+                    sta .char+1
+                    lda #0
+                    sta .xsav+1
+                    lda #0x20
+                    ldx #17
+-                   sta vidmem1+0x0231+(10*40)+9,x
+                    dex
+                    bpl -
+                    rts
+
+print_timer:        ldx #2
+-                   lda timer_init,x
+                    sta vidmem1+0x0231+(0*40)+35,x
+                    lda timer_current,x
+                    sta vidmem1+0x0231+(1*40)+35,x
+                    dex
+                    bpl -
+                    rts
+timer_init:         !scr "000"
+timer_current:      !scr "000"
 ; ==============================================================================
                     !zone SONGSDATA
                     *= songdata
@@ -972,99 +1111,6 @@ songlooplist:
                     !byte 1, 1, 1, 0, 1, 0, 0, 0
                     !byte 1, 1, 1, 0, 1, 0, 1, 1
                     !byte 1, 1, 1, 0, 0, 0, 1
-
-
-; ==============================================================================
-                    !zone PRINT
-print_window:       lda songwindowtop
-                    sta .current_index
-                    clc
-                    adc #10
-                    sta .cmp_end+1
-                    lda songplaying
-                    sta .cmp_playing+1
-                    lda .current_index
-.loop:              tax
-                    lda songplaylist,x
-                    tax
-                    lda songtitles_lo,x
-                    sta .src+1
-                    lda songtitles_hi,x
-                    sta .src+2
-.vidmempointer:     ldy #0
-                    lda songvidmem_lo,y
-                    sta .dest+1
-                    lda songvidmem_hi,y
-                    sta .dest+2
-                    lda songcolmem_lo,y
-                    sta .coldest+1
-                    lda songcolmem_hi,y
-                    sta .coldest+2
-                    lda .current_index
-.cmp_playing:       cmp #0
-                    bne +
-                    ldx #LIGHT_GREEN
-                    !byte 0x2C
-+                   ldx #YELLOW
-                    ldy #25
--                   txa
-.coldest:           sta 0x0000,y
-.src:               lda 0x0000,y
-.dest:              sta 0x0000,y
-                    dey
-                    bpl -
-                    inc .vidmempointer+1
-                    inc .current_index
-                    lda .current_index
-.cmp_end:           cmp #0
-                    bne .loop
-                    lda #0
-                    sta .vidmempointer+1
-                    lda #DISABLE
-                    sta enable_print_win
-                    rts
-.current_index:     !byte 0x00
-
-                    LOADBAR_FIRST_CHAR = 247
-                    LOADBAR_LAST_CHAR = 255
-print_loadbar:
-.xsav:              ldx #0
-                    cpx #18
-                    bne .char
-                    rts
-.char:              lda #LOADBAR_FIRST_CHAR
-                    sta vidmem1+0x0231+(10*40)+9,x
-                    inc .char+1
-                    lda .char+1
-                    cmp #0
-                    bne +
-                    lda #LOADBAR_FIRST_CHAR
-                    sta .char+1
-                    inc .xsav+1
-+
-                    rts
-
-reset_loadbar:      lda #LOADBAR_FIRST_CHAR
-                    sta .char+1
-                    lda #0
-                    sta .xsav+1
-                    lda #0x20
-                    ldx #17
--                   sta vidmem1+0x0231+(10*40)+9,x
-                    dex
-                    bpl -
-                    rts
-
-print_timer:        ldx #2
--                   lda timer_init,x
-                    sta vidmem1+0x0231+(0*40)+35,x
-                    lda timer_current,x
-                    sta vidmem1+0x0231+(1*40)+35,x
-                    dex
-                    bpl -
-                    rts
-timer_init:         !scr "000"
-timer_current:      !scr "000"
 ; ==============================================================================
                     !zone SPRITES
                     SPRITES_BAR_X_START = (28*8)+0x18
@@ -1163,39 +1209,3 @@ sprites_multiplex:  lda #0x08
                     sta 0xD00F
                     rts
 ; ==============================================================================
-                    !zone CURSOR
-                    CRSR_CHAR = 64
-                    CRSR_CHAR_INV = 192
-                    CRSR_ANIM_SPEED = 6
-cursor_place:       ldx cursorpos
-                    lda cursorvidmem_lo,x
-                    sta .crsr_vid_dest+1
-                    lda cursorvidmem_hi,x
-                    sta .crsr_vid_dest+2
-.crsr_char_mod:     lda #CRSR_CHAR
-.crsr_vid_dest:     sta 0x0000
-                    rts
-
-cursor_anim:        lda #CRSR_ANIM_SPEED
-                    beq +
-                    dec cursor_anim+1
-                    rts
-+                   lda #CRSR_ANIM_SPEED
-                    sta cursor_anim+1
-                    lda .crsr_char_mod+1
-                    cmp #0x20
-                    beq +
-                    eor #(CRSR_CHAR XOR CRSR_CHAR_INV)
-                    sta .crsr_char_mod+1
-+                   jmp .crsr_char_mod
-
-cursor_delete:      lda #0x20
-                    jmp .crsr_vid_dest
-
-cursorpos:          !byte 0x00
-cursorvidmem_lo:    !for i, 0, 9 {
-                        !byte <(vidmem1+0x0230+(i*40))
-                    }
-cursorvidmem_hi:    !for i, 0, 9 {
-                        !byte >(vidmem1+0x0230+(i*40))
-                    }
