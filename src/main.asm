@@ -1335,11 +1335,49 @@ enable_color_next:  jsr color_next
 .letter_count:      lda #0
                     cmp #6
                     bne +
+                    jsr .readfromtab
                     lda #0
                     sta .letter_count+1
                     lda #COLORLETTERS_DELAY
                     sta colorletters+1
 +                   rts
+
+.readfromtab:       ldx #5
+.srclo:             lda .lettersrc_lo,x
+                    sta .lettertab_lo,x
+.srchi:             lda .lettersrc_hi,x
+                    sta .lettertab_hi,x
+                    dex
+                    bpl .srclo
+.repeat:            lda #3
+                    bne +
+                    lda #3
+                    sta .repeat+1
+                    lda #<.lettersrc_lo
+                    sta .srclo+1
+                    lda #>.lettersrc_lo
+                    sta .srclo+2
+                    lda #<.lettersrc_hi
+                    sta .srchi+1
+                    lda #>.lettersrc_hi
+                    sta .srchi+2
+                    rts
++                   clc
+                    lda .srclo+1
+                    adc #6
+                    sta .srclo+1
+                    lda .srclo+2
+                    adc #0
+                    sta .srclo+2
+                    clc
+                    lda .srchi+1
+                    adc #6
+                    sta .srchi+1
+                    lda .srchi+2
+                    adc #0
+                    sta .srchi+2
+                    dec .repeat+1
+                    rts
 
 color_next:         ldx #5
                     lda .lettertab_lo,x
@@ -1357,6 +1395,23 @@ color_next:         ldx #5
 .lettertab_lo:      !byte <color_e, <color_l, <color_g1, <color_g0
                     !byte <color_o, <color_t
 .lettertab_hi:      !byte >color_e, >color_l, >color_g1, >color_g0
+                    !byte >color_o, >color_t
+
+.lettersrc_lo:      !byte <color_t, <color_e, <color_o, <color_l
+                    !byte <color_g0, <color_g1
+                    !byte <color_g1, <color_g0, <color_l, <color_o
+                    !byte <color_e, <color_t
+                    !byte <color_t, <color_o, <color_g0, <color_g1
+                    !byte <color_l, <color_e
+                    !byte <color_e, <color_l, <color_g1, <color_g0
+                    !byte <color_o, <color_t
+.lettersrc_hi:      !byte >color_t, >color_e, >color_o, >color_l
+                    !byte >color_g0, >color_g1
+                    !byte >color_g1, >color_g0, >color_l, >color_o
+                    !byte >color_e, >color_t
+                    !byte >color_t, >color_o, >color_g0, >color_g1
+                    !byte >color_l, >color_e
+                    !byte >color_e, >color_l, >color_g1, >color_g0
                     !byte >color_o, >color_t
 
 color_get:          ldx #14
