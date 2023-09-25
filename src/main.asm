@@ -241,6 +241,7 @@ irq01:              nop
                     nop
                     nop
                     nop
+                    nop
                     lda #0x3B
                     ldy #YELLOW
                     sta 0xD011
@@ -250,6 +251,7 @@ irq01:              nop
 irq02:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #LIGHT_GREY
                     sta 0xD020
                     jmp irq_end
@@ -257,6 +259,7 @@ irq02:              ldx #2
 irq03:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #PINK
                     sta 0xD020
                     jmp irq_end
@@ -264,6 +267,7 @@ irq03:              ldx #2
 irq04:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #ORANGE
                     sta 0xD020
                     jmp irq_end
@@ -278,6 +282,7 @@ irq05:              ldx #2
 irq06:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #BROWN
                     sta 0xD020
                     jmp irq_end
@@ -285,6 +290,7 @@ irq06:              ldx #2
 irq07:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #BLUE
                     sta 0xD020
                     jmp irq_end
@@ -292,6 +298,7 @@ irq07:              ldx #2
 irq08:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #DARK_GREY
                     sta 0xD020
                     jmp irq_end
@@ -299,6 +306,7 @@ irq08:              ldx #2
 irq09:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #PURPLE
                     sta 0xD020
                     jmp irq_end
@@ -306,6 +314,7 @@ irq09:              ldx #2
 irq10:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #LIGHT_BLUE
                     sta 0xD020
                     jmp irq_end
@@ -313,6 +322,7 @@ irq10:              ldx #2
 irq11:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #GREEN
                     sta 0xD020
                     jmp irq_end
@@ -320,6 +330,7 @@ irq11:              ldx #2
 irq12:              ldx #2
 -                   dex
                     bpl -
+                    nop
                     lda #CYAN
                     sta 0xD020
                     lda #BLACK
@@ -348,7 +359,9 @@ irq14:              lda #CYAN
                     sta 0xD021
                     lda #0x93
                     sta 0xD011
+enable_cursor_place:
                     jsr cursor_place
+enable_cursor_anim:
                     jsr cursor_anim
 enable_loadbar:     bit print_loadbar
 enable_timer:       bit timer_increase
@@ -567,6 +580,9 @@ load_song:          lda #DISABLE
                     lda song_windowpos,x
                     sta songwindowtop
                     jsr cursor_delete
+                    lda #DISABLE
+                    sta enable_cursor_place
+                    sta enable_cursor_anim
                     lda song_cursorpos,x
                     sta cursorpos
                     lda songplaylist,x
@@ -608,6 +624,8 @@ load_song:          lda #DISABLE
                     bcc +
                     jmp *
 +                   lda #ENABLE
+                    sta enable_cursor_place
+                    sta enable_cursor_anim
                     sta enable_keyboard
                     sta enable_print_win
                     lda #DISABLE
@@ -684,7 +702,11 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     lda #ENABLE
                     sta enable_print_win
                     rts
-.crsr_down:         lda cursorpos
+.crsr_down:         lda songselected
+                    cmp #38
+                    bne +
+                    rts
++                   lda cursorpos
                     cmp #9
                     beq +
                     jsr cursor_delete
@@ -894,7 +916,15 @@ print_window:       lda songwindowtop
                     bne .loop
                     lda #0
                     sta .vidmempointer+1
-                    lda #DISABLE
+                    lda songwindowtop
+                    cmp #30
+                    bne +
+                    lda #0x20
+                    ldy #25
+-                   sta vidmem1+0x0231+(9*40),y
+                    dey
+                    bpl -
++                   lda #DISABLE
                     sta enable_print_win
                     rts
 .current_index:     !byte 0x00
