@@ -680,6 +680,12 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
 +                   cmp #KEY_CRSRDOWN
                     bne +
                     jmp .crsr_down
++                   cmp #KEY_CRSRRIGHT
+                    bne +
+                    jmp .crsr_right
++                   cmp #KEY_CRSRLEFT
+                    bne +
+                    jmp .crsr_left
 +                   cmp #KEY_RETURN
                     bne +
                     jmp .return
@@ -721,6 +727,39 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     lda #ENABLE
                     sta enable_print_win
                     rts
+
+.crsr_right:        lda songselected
+                    cmp #30
+                    bcs ++
+                    adc #10
+                    sta songselected
+                    cmp #39
+                    bne +
+                    dec songselected
++                   jsr cursor_delete
+                    ldx songselected
+                    lda song_cursorpos,x
+                    sta cursorpos
+                    lda song_windowpos,x
+                    sta songwindowtop
+                    lda #ENABLE
+                    sta enable_print_win
+++                  rts
+
+.crsr_left:         lda songselected
+                    cmp #10
+                    bcc +
+                    sbc #10
+                    sta songselected
+                    jsr cursor_delete
+                    ldx songselected
+                    lda song_cursorpos,x
+                    sta cursorpos
+                    lda song_windowpos,x
+                    sta songwindowtop
+                    lda #ENABLE
+                    sta enable_print_win
++                   rts
 
 .return:            lda songselected
                     sta songtoload
