@@ -132,19 +132,20 @@ d018_val1           = <(((vidmem1-vicbank0)/0x400) << 4)+ <(((charset1-vicbank0)
                     !bin "gfx/hires_top.prg",(13*40)*8,2
                     *= vidmem0
                     ;!bin "gfx/hires_top.prg",(13*40),0x1F40+2
-!by $70,$00,$00,$00,$00,$00,$00,$00,$00,$00,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$00,$00,$50,$30,$D0,$F0,$A0,$80,$70,$70,$70,$70,$70
-!by $F0,$00,$1B,$13,$13,$13,$13,$13,$1B,$00,$F0,$00,$F0,$F0,$F0,$F0,$F0,$F0,$00,$F0,$F0,$F0,$F0,$F0,$F0,$00,$F0,$00,$1B,$10,$30,$D0,$F0,$A0,$80,$00,$F0,$F0,$F0,$F0
-!by $A0,$A0,$B0,$1B,$B0,$13,$B0,$1B,$B0,$00,$10,$00,$A0,$A0,$A0,$A0,$A0,$10,$00,$A0,$A0,$A0,$A0,$A0,$10,$00,$A0,$A0,$B0,$13,$00,$D0,$F0,$A0,$10,$00,$A0,$A0,$A0,$A0
-!by $80,$80,$80,$B0,$00,$13,$00,$B0,$00,$10,$13,$10,$80,$80,$80,$80,$10,$13,$10,$80,$80,$80,$80,$10,$13,$10,$80,$80,$00,$13,$00,$D0,$F0,$10,$13,$10,$80,$80,$80,$80
-!by $20,$20,$20,$20,$00,$13,$00,$00,$10,$1B,$B0,$1B,$10,$00,$00,$10,$1B,$B0,$1B,$10,$00,$00,$10,$1B,$B0,$1B,$10,$20,$00,$13,$00,$00,$10,$1B,$B0,$1B,$10,$20,$20,$20
-!by $90,$90,$90,$00,$00,$13,$00,$1B,$13,$B0,$00,$B0,$13,$10,$1B,$13,$B0,$00,$B0,$13,$10,$1B,$13,$B0,$00,$B0,$13,$10,$00,$13,$00,$1B,$13,$B0,$1B,$13,$13,$10,$90,$90
-!by $60,$60,$60,$00,$1B,$13,$00,$B0,$1B,$10,$00,$10,$1B,$B0,$B0,$1B,$10,$10,$00,$13,$B0,$B0,$1B,$10,$10,$00,$13,$B0,$1B,$13,$00,$B0,$1B,$10,$B0,$B0,$B0,$B0,$00,$60
-!by $B0,$B0,$B0,$B0,$B0,$1B,$10,$00,$B0,$1B,$13,$1B,$B0,$00,$00,$B0,$1B,$1B,$00,$13,$00,$B0,$B0,$1B,$1B,$00,$13,$00,$B0,$1B,$10,$00,$B0,$1B,$13,$1B,$00,$00,$00,$B0
-!by $40,$40,$40,$40,$40,$B0,$B0,$B0,$40,$B0,$1B,$B0,$40,$40,$40,$40,$B0,$B0,$00,$13,$00,$40,$40,$B0,$B0,$00,$13,$00,$E0,$B0,$B0,$00,$F0,$B0,$1B,$B0,$40,$4A,$4A,$40
-!by $E0,$E0,$E0,$E0,$E0,$E0,$00,$E0,$E0,$00,$B0,$E0,$E0,$E0,$E0,$E0,$E0,$00,$1B,$1B,$00,$E0,$E0,$E0,$00,$1B,$1B,$00,$E0,$50,$00,$00,$F0,$00,$B0,$E0,$E0,$AE,$AE,$E0
-!by $50,$50,$50,$50,$50,$50,$50,$50,$50,$00,$50,$50,$50,$50,$50,$50,$50,$50,$B0,$B0,$50,$50,$50,$50,$50,$B0,$B0,$50,$E0,$50,$30,$D0,$F0,$00,$80,$50,$50,$50,$50,$50
-!by $30,$30,$34,$34,$34,$34,$34,$34,$30,$30,$34,$34,$34,$34,$34,$34,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30
-!by $30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30
+;     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39
+!by $70,$00,$00,$00,$00,$00,$00,$00,$00,$00,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$70,$00,$00,$50,$30,$D0,$F0,$A0,$80,$70,$70,$70,$70,$70 ; 0
+!by $F0,$00,$1B,$13,$13,$13,$13,$13,$1B,$00,$F0,$00,$F0,$F0,$F0,$F0,$F0,$F0,$00,$F0,$F0,$F0,$F0,$F0,$F0,$00,$F0,$00,$1B,$10,$30,$D0,$F0,$A0,$80,$00,$F0,$F0,$F0,$F0 ; 1
+!by $A0,$A0,$B0,$1B,$B0,$13,$B0,$1B,$B0,$00,$10,$00,$A0,$A0,$A0,$A0,$A0,$10,$00,$A0,$A0,$A0,$A0,$A0,$10,$00,$A0,$A0,$B0,$13,$00,$D0,$F0,$A0,$10,$00,$A0,$A0,$A0,$A0 ; 2
+!by $80,$80,$80,$B0,$00,$13,$00,$B0,$00,$10,$13,$10,$80,$80,$80,$80,$10,$13,$10,$80,$80,$80,$80,$10,$13,$10,$80,$80,$00,$13,$00,$D0,$F0,$10,$13,$10,$80,$80,$80,$80 ; 3
+!by $20,$20,$20,$20,$00,$13,$00,$00,$10,$1B,$B0,$1B,$10,$00,$00,$10,$1B,$B0,$1B,$10,$00,$00,$10,$1B,$B0,$1B,$10,$20,$00,$13,$00,$00,$10,$1B,$B0,$1B,$10,$20,$20,$20 ; 4
+!by $90,$90,$90,$00,$00,$13,$00,$1B,$13,$B0,$00,$B0,$13,$10,$1B,$13,$B0,$00,$B0,$13,$10,$1B,$13,$B0,$00,$B0,$13,$10,$00,$13,$00,$1B,$13,$B0,$1B,$13,$13,$10,$90,$90 ; 5
+!by $60,$60,$60,$00,$1B,$13,$00,$B0,$1B,$10,$00,$10,$1B,$B0,$B0,$1B,$10,$10,$00,$13,$B0,$B0,$1B,$10,$10,$00,$13,$B0,$1B,$13,$00,$B0,$1B,$10,$B0,$B0,$B0,$B0,$00,$60 ; 6
+!by $B0,$B0,$B0,$B0,$B0,$1B,$10,$00,$B0,$1B,$13,$1B,$B0,$00,$00,$B0,$1B,$1B,$00,$13,$00,$B0,$B0,$1B,$1B,$00,$13,$00,$B0,$1B,$10,$00,$B0,$1B,$13,$1B,$00,$00,$00,$B0 ; 7
+!by $40,$40,$40,$40,$40,$B0,$B0,$B0,$40,$B0,$1B,$B0,$40,$40,$40,$40,$B0,$B0,$00,$13,$00,$40,$40,$B0,$B0,$00,$13,$00,$E0,$B0,$B0,$00,$F0,$B0,$1B,$B0,$40,$4A,$4A,$40 ; 8
+!by $E0,$E0,$E0,$E0,$E0,$E0,$00,$E0,$E0,$00,$B0,$E0,$E0,$E0,$E0,$E0,$E0,$00,$1B,$1B,$00,$E0,$E0,$E0,$00,$1B,$1B,$00,$E0,$50,$00,$00,$F0,$00,$B0,$E0,$E0,$AE,$AE,$E0 ; 9
+!by $50,$50,$50,$50,$50,$50,$50,$50,$50,$00,$50,$50,$50,$50,$50,$50,$50,$50,$B0,$B0,$50,$50,$50,$50,$50,$B0,$B0,$50,$E0,$50,$30,$D0,$F0,$00,$80,$50,$50,$50,$50,$50 ; 10
+!by $30,$30,$34,$34,$34,$34,$34,$34,$30,$30,$34,$34,$34,$34,$34,$34,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30 ; 11
+!by $30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30 ; 12
                     *= charset1
                     !bin "gfx/charset.chr"
                     *= vidmem1
@@ -369,6 +370,8 @@ enable_check_end:   bit timer_check_end
 enable_song_end:    bit song_end
 enable_song_fade:   bit song_fadeout
                     jsr print_timer
+                    jsr colorletters
+                    jsr colorlovers
                     +flag_set flag_irq_ready
                     jmp irq_end
 
@@ -1309,4 +1312,310 @@ sprites_multiplex:  lda #0x08
                     sta 0xD00D
                     sta 0xD00F
                     rts
+; ==============================================================================
+                    !zone COLORLETTERS
+                    COLORLETTERS_DELAY = 0xAF
+                    COLORLETTERS_SPEED = 0x02
+
+colorletters:       lda #COLORLETTERS_DELAY
+                    beq +
+                    dec colorletters+1
+                    rts
++
+.spd_chng:          lda #COLORLETTERS_SPEED
+                    sta colorletters+1
+enable_color_next:  jsr color_next
+                    jsr color_get
+.routine:           jsr 0x0000
+.letter_done:       lda #0
+                    beq +
+                    lda #0
+                    sta .letter_done+1
+                    inc .letter_count+1
+.letter_count:      lda #0
+                    cmp #6
+                    bne +
+                    lda #0
+                    sta .letter_count+1
+                    lda #COLORLETTERS_DELAY
+                    sta colorletters+1
++                   rts
+
+color_next:         ldx #5
+                    lda .lettertab_lo,x
+                    sta .routine+1
+                    lda .lettertab_hi,x
+                    sta .routine+2
+                    dex
+                    bpl +
+                    ldx #5
++                   stx color_next+1
+                    lda #DISABLE
+                    sta enable_color_next
+                    rts
+
+.lettertab_lo:      !byte <color_e, <color_l, <color_g1, <color_g0
+                    !byte <color_o, <color_t
+.lettertab_hi:      !byte >color_e, >color_l, >color_g1, >color_g0
+                    !byte >color_o, >color_t
+
+color_get:          ldx #14
+                    lda .fade_tab,x
+                    jsr color_set
+                    dex
+                    bpl +
+                    lda #ENABLE
+                    sta enable_color_next
+                    lda #1
+                    sta .letter_done+1
+                    ldx #14
++                   stx color_get+1
+                    rts
+                    ; color_set: expects color in A
+color_set:          asl
+                    asl
+                    asl
+                    asl
+                    sta .high_nib
+                    lda .coltype0
+                    and #0x0F
+                    ora .high_nib
+                    sta .coltype0
+                    lda .coltype1
+                    and #0x0F
+                    ora .high_nib
+                    sta .coltype1
+                    lda .coltype2
+                    and #0x0F
+                    ora .high_nib
+                    sta .coltype2
+                    rts
+
+color_t:            lda .coltype0
+                    sta vidmem0+(7*40)+6
+                    lda .coltype1
+                    sta vidmem0+(1*40)+3
+                    sta vidmem0+(1*40)+4
+                    sta vidmem0+(1*40)+5
+                    sta vidmem0+(1*40)+6
+                    sta vidmem0+(1*40)+7
+                    sta vidmem0+(2*40)+5
+                    sta vidmem0+(3*40)+5
+                    sta vidmem0+(4*40)+5
+                    sta vidmem0+(5*40)+5
+                    sta vidmem0+(6*40)+5
+                    lda .coltype2
+                    sta vidmem0+(1*40)+2
+                    sta vidmem0+(1*40)+8
+                    sta vidmem0+(2*40)+3
+                    sta vidmem0+(2*40)+7
+                    sta vidmem0+(6*40)+4
+                    sta vidmem0+(7*40)+5
+                    rts
+
+color_o:            lda .coltype0
+                    sta vidmem0+(2*40)+10
+                    sta vidmem0+(3*40)+9
+                    sta vidmem0+(3*40)+11
+                    sta vidmem0+(4*40)+8
+                    sta vidmem0+(4*40)+12
+                    sta vidmem0+(5*40)+13
+                    sta vidmem0+(6*40)+9
+                    sta vidmem0+(6*40)+11
+                    lda .coltype1
+                    sta vidmem0+(3*40)+10
+                    sta vidmem0+(5*40)+8
+                    sta vidmem0+(5*40)+12
+                    sta vidmem0+(7*40)+10
+                    lda .coltype2
+                    sta vidmem0+(4*40)+9
+                    sta vidmem0+(4*40)+11
+                    sta vidmem0+(5*40)+7
+                    sta vidmem0+(6*40)+8
+                    sta vidmem0+(6*40)+12
+                    sta vidmem0+(7*40)+9
+                    sta vidmem0+(7*40)+11
+                    sta vidmem0+(8*40)+10
+                    rts
+
+color_g0:           lda .coltype0
+                    sta vidmem0+(2*40)+17
+                    sta vidmem0+(3*40)+16
+                    sta vidmem0+(3*40)+18
+                    sta vidmem0+(4*40)+15
+                    sta vidmem0+(4*40)+19
+                    sta vidmem0+(5*40)+20
+                    sta vidmem0+(6*40)+16
+                    sta vidmem0+(6*40)+17
+                    lda .coltype1
+                    sta vidmem0+(3*40)+17
+                    sta vidmem0+(5*40)+15
+                    sta vidmem0+(5*40)+19
+                    sta vidmem0+(6*40)+19
+                    sta vidmem0+(7*40)+19
+                    sta vidmem0+(8*40)+19
+                    lda .coltype2
+                    sta vidmem0+(4*40)+16
+                    sta vidmem0+(4*40)+18
+                    sta vidmem0+(5*40)+14
+                    sta vidmem0+(6*40)+15
+                    sta vidmem0+(7*40)+16
+                    sta vidmem0+(7*40)+17
+                    sta vidmem0+(9*40)+18
+                    sta vidmem0+(9*40)+19
+                    rts
+
+color_g1:           lda .coltype0
+                    sta vidmem0+(2*40)+17+7
+                    sta vidmem0+(3*40)+16+7
+                    sta vidmem0+(3*40)+18+7
+                    sta vidmem0+(4*40)+15+7
+                    sta vidmem0+(4*40)+19+7
+                    sta vidmem0+(5*40)+20+7
+                    sta vidmem0+(6*40)+16+7
+                    sta vidmem0+(6*40)+17+7
+                    lda .coltype1
+                    sta vidmem0+(3*40)+17+7
+                    sta vidmem0+(5*40)+15+7
+                    sta vidmem0+(5*40)+19+7
+                    sta vidmem0+(6*40)+19+7
+                    sta vidmem0+(7*40)+19+7
+                    sta vidmem0+(8*40)+19+7
+                    lda .coltype2
+                    sta vidmem0+(4*40)+16+7
+                    sta vidmem0+(4*40)+18+7
+                    sta vidmem0+(5*40)+14+7
+                    sta vidmem0+(6*40)+15+7
+                    sta vidmem0+(7*40)+16+7
+                    sta vidmem0+(7*40)+17+7
+                    sta vidmem0+(9*40)+18+7
+                    sta vidmem0+(9*40)+19+7
+                    rts
+
+color_l:            lda .coltype0
+                    sta vidmem0+(1*40)+29
+                    sta vidmem0+(7*40)+30
+                    lda .coltype1
+                    sta vidmem0+(2*40)+29
+                    sta vidmem0+(3*40)+29
+                    sta vidmem0+(4*40)+29
+                    sta vidmem0+(5*40)+29
+                    sta vidmem0+(6*40)+29
+                    lda .coltype2
+                    sta vidmem0+(1*40)+28
+                    sta vidmem0+(6*40)+28
+                    sta vidmem0+(7*40)+29
+                    rts
+
+color_e:            lda .coltype0
+                    sta vidmem0+(2*40)+34
+                    sta vidmem0+(3*40)+33
+                    sta vidmem0+(3*40)+35
+                    sta vidmem0+(4*40)+32
+                    sta vidmem0+(4*40)+36
+                    sta vidmem0+(5*40)+37
+                    sta vidmem0+(6*40)+33
+                    lda .coltype1
+                    sta vidmem0+(3*40)+34
+                    sta vidmem0+(5*40)+32
+                    sta vidmem0+(5*40)+35
+                    sta vidmem0+(5*40)+36
+                    sta vidmem0+(7*40)+34
+                    lda .coltype2
+                    sta vidmem0+(4*40)+33
+                    sta vidmem0+(4*40)+35
+                    sta vidmem0+(5*40)+31
+                    sta vidmem0+(5*40)+34
+                    sta vidmem0+(6*40)+32
+                    sta vidmem0+(7*40)+33
+                    sta vidmem0+(7*40)+35
+                    sta vidmem0+(8*40)+34
+                    rts
+
+.high_nib:          !byte 0x00
+.coltype0:          !byte 0x00
+.coltype1:          !byte 0x03
+.coltype2:          !byte 0x0B
+
+.fade_tab:          !byte WHITE, LIGHT_GREEN, CYAN, GREY
+                    !byte PURPLE, RED, BROWN, BLACK
+                    !byte BROWN, RED, PURPLE, GREY, CYAN
+                    !byte LIGHT_GREEN, WHITE
+; ==============================================================================
+                    !zone COLORLOVERS
+                    COLORLOVERS_SPEED = 0x02
+colorlovers:        lda #1
+                    beq +
+                    dec colorlovers+1
+                    rts
++                   lda #COLORLOVERS_SPEED
+                    sta colorlovers+1
+                    lda vidmem0+(11*40)+3
+                    sta vidmem0+(11*40)+2
+                    lda vidmem0+(11*40)+4
+                    sta vidmem0+(11*40)+3
+                    lda vidmem0+(11*40)+5
+                    sta vidmem0+(11*40)+4
+                    lda vidmem0+(11*40)+6
+                    sta vidmem0+(11*40)+5
+                    lda vidmem0+(11*40)+7
+                    sta vidmem0+(11*40)+6
+                    lda vidmem0+(11*40)+10
+                    sta vidmem0+(11*40)+7
+                    lda vidmem0+(11*40)+11
+                    sta vidmem0+(11*40)+10
+                    lda vidmem0+(11*40)+12
+                    sta vidmem0+(11*40)+11
+                    lda vidmem0+(11*40)+13
+                    sta vidmem0+(11*40)+12
+                    lda vidmem0+(11*40)+14
+                    sta vidmem0+(11*40)+13
+                    lda vidmem0+(11*40)+15
+                    sta vidmem0+(11*40)+14
+                    lda .tmp_top
+                    sta vidmem0+(11*40)+15
+
+                    lda vidmem0+(12*40)+3
+                    sta vidmem0+(12*40)+2
+                    lda vidmem0+(12*40)+4
+                    sta vidmem0+(12*40)+3
+                    lda vidmem0+(12*40)+5
+                    sta vidmem0+(12*40)+4
+                    lda vidmem0+(12*40)+6
+                    sta vidmem0+(12*40)+5
+                    lda vidmem0+(12*40)+7
+                    sta vidmem0+(12*40)+6
+                    lda vidmem0+(12*40)+10
+                    sta vidmem0+(12*40)+7
+                    lda vidmem0+(12*40)+11
+                    sta vidmem0+(12*40)+10
+                    lda vidmem0+(12*40)+12
+                    sta vidmem0+(12*40)+11
+                    lda vidmem0+(12*40)+13
+                    sta vidmem0+(12*40)+12
+                    lda vidmem0+(12*40)+14
+                    sta vidmem0+(12*40)+13
+                    lda vidmem0+(12*40)+15
+                    sta vidmem0+(12*40)+14
+                    lda .tmp_bot
+                    sta vidmem0+(12*40)+15
+
+.x_pt:              ldx #38
+                    lda .coltab_top,x
+                    sta .tmp_top
+                    lda .coltab_bot,x
+                    sta .tmp_bot
+                    dex
+                    bpl +
+                    ldx #48
++                   stx .x_pt+1
+                    rts
+
+.tmp_top:           !byte 0x34
+.tmp_bot:           !byte 0x36
+
+.coltab_top:        !fi 40,0x34
+                    !byte 0x34, 0x32, 0x3A, 0x37, 0x31, 0x31, 0x37, 0x3A, 0x32
+.coltab_bot:        !fi 40,0x36
+                    !byte 0x36, 0x32, 0x3A, 0x37, 0x31, 0x31, 0x37, 0x3A, 0x32
 ; ==============================================================================
