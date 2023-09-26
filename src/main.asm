@@ -148,11 +148,15 @@ d018_val1           = <(((vidmem1-vicbank0)/0x400) << 4)+ <(((charset1-vicbank0)
 !by $30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$36,$36,$36,$36,$36,$36,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$30,$E0,$50,$30,$D0,$F0,$A0,$80,$30,$30,$30,$30,$30 ; 12
                     *= charset1
                     !bin "gfx/charset.chr"
+                    *= charset1 + (8*0x80)
+                    !bin "gfx/shineandspider-chars.bin"
                     *= vidmem1
                     !fi (13*40), " "
-                    !bin "gfx/petscii_bottom.prg",(12*40),2
+                    !bin "gfx/petscii_bottom.bin",(12*40)
                     *= sprite_data
                     !bin "gfx/bar_sprites.bin"
+scrolltext:
+                    !src "scrolltext.asm"
 ; ==============================================================================
                     *= code_start
                     lda #0x7F
@@ -221,6 +225,7 @@ music_play_2x:      bit 0x0000
                     !if DEBUG=1 {
                         dec 0xD020
                     }
+                    jsr scroller
                     +flag_set flag_irq_top
                     jmp irq_end
 
@@ -354,6 +359,8 @@ music_play:         bit 0x0000
                     !if DEBUG = 1 {
                         inc 0xD020
                     }
+                    jsr scroller_colcycle
+                    jsr col_icons
                     jmp irq_end
 
 irq14:              lda #CYAN
@@ -517,6 +524,8 @@ init_vic:           lda #dd00_val0
                     sta 0xD800+0x0231+(1*40)+35
                     sta 0xD800+0x0231+(1*40)+35+1
                     sta 0xD800+0x0231+(1*40)+35+2
+
+                    jsr scroller_prepare
 
                     lda #BLACK
                     sta 0xD021
@@ -1674,3 +1683,210 @@ colorlovers:        lda #1
 .coltab_bot:        !fi 40,0x36
                     !byte 0x36, 0x32, 0x3A, 0x37, 0x31, 0x31, 0x37, 0x3A, 0x32
 ; ==============================================================================
+                    *= bitmap0 + 0x1100
+                    !zone SCROLLER
+scroller:           lda #0
+                    beq .need_new
+                    dec scroller+1
+                    jmp .softscroll
+.need_new:          jsr .get_text
+                    cmp #0xFF
+                    bne +
+                    jsr .text_reset
++                   jmp .fill_buf
+
+.get_text:
+.pt_scrolltext:     lda scrolltext
+                    tay
+                    clc
+                    lda .pt_scrolltext+1
+                    adc #0x01
+                    sta .pt_scrolltext+1
+                    lda .pt_scrolltext+2
+                    adc #0x00
+                    sta .pt_scrolltext+2
+                    tya
+                    rts
+
+.text_reset:        lda #<scrolltext
+                    sta .pt_scrolltext+1
+                    lda #>scrolltext
+                    sta .pt_scrolltext+2
+                    lda #0x20
+                    rts
+
+.fill_buf:          clc
+                    cmp #0x40
+                    bcc +
+                    ldy #(>charset1+0x200)
+                    sty .char_point+2
+                    sec
+                    sbc #0x40
+                    clc
++                   rol
+                    rol
+                    rol
+                    sta .char_point+1
+                    bcc +
+                    inc .char_point+2
++                   ldx #0x07
+.char_point:        lda charset1,x
+                    sta .scrollchar,x
+                    dex
+                    bpl .char_point
+
+                    lda #(<charset1)
+                    sta .char_point+1
+                    lda #(>charset1)
+                    sta .char_point+2
+
+                    lda .scrollchar
+                    sta .buf_top+0
+                    sta .buf_top+1
+                    lda .scrollchar+1
+                    sta .buf_top+2
+                    sta .buf_top+3
+                    lda .scrollchar+2
+                    sta .buf_top+4
+                    sta .buf_top+5
+                    lda .scrollchar+3
+                    sta .buf_top+6
+                    sta .buf_top+7
+                    lda .scrollchar+4
+                    sta .buf_bot+0
+                    sta .buf_bot+1
+                    lda .scrollchar+5
+                    sta .buf_bot+2
+                    sta .buf_bot+3
+                    lda .scrollchar+6
+                    sta .buf_bot+4
+                    sta .buf_bot+5
+                    lda .scrollchar+7
+                    sta .buf_bot+6
+                    sta .buf_bot+7
+
+                    lda #8
+                    sta scroller+1
+
+.softscroll:        !for i, 0, 7 {
+                      clc
+                      rol .buf_top+i
+                      rol charset1+(8*0x74)+i
+                      rol charset1+(8*0x73)+i
+                      rol charset1+(8*0x72)+i
+                      rol charset1+(8*0x71)+i
+                      rol charset1+(8*0x70)+i
+                    }
+                    !for i, 0, 7 {
+                      clc
+                      rol .buf_bot+i
+                      rol charset1+(8*0x79)+i
+                      rol charset1+(8*0x78)+i
+                      rol charset1+(8*0x77)+i
+                      rol charset1+(8*0x76)+i
+                      rol charset1+(8*0x75)+i
+                    }
+                    rts
+
+.buf_top:           !byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+.buf_bot:           !byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+.scrollchar:        !byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+scroller_prepare:   ldx #0x70
+                    stx vidmem1+(22*40)+39-4
+                    inx
+                    stx vidmem1+(22*40)+39-3
+                    inx
+                    stx vidmem1+(22*40)+39-2
+                    inx
+                    stx vidmem1+(22*40)+39-1
+                    inx
+                    stx vidmem1+(22*40)+39-0
+                    inx
+                    stx vidmem1+(23*40)+39-4
+                    inx
+                    stx vidmem1+(23*40)+39-3
+                    inx
+                    stx vidmem1+(23*40)+39-2
+                    inx
+                    stx vidmem1+(23*40)+39-1
+                    inx
+                    stx vidmem1+(23*40)+39-0
+                    rts
+
+                    SCROLLCOLCYCLE_SPEED = 0x04
+scroller_colcycle:  lda #SCROLLCOLCYCLE_SPEED
+                    beq +
+                    dec scroller_colcycle+1
+                    rts
++                   lda #SCROLLCOLCYCLE_SPEED
+                    sta scroller_colcycle+1
+                    lda cycletab+4
+                    sta 0xD800+(22*40)+39-4
+                    sta 0xD800+(23*40)+39-4
+                    lda cycletab+3
+                    sta 0xD800+(22*40)+39-3
+                    sta 0xD800+(23*40)+39-3
+                    lda cycletab+2
+                    sta 0xD800+(22*40)+39-2
+                    sta 0xD800+(23*40)+39-2
+                    lda cycletab+1
+                    sta 0xD800+(22*40)+39-1
+                    sta 0xD800+(23*40)+39-1
+                    lda cycletab+0
+                    sta 0xD800+(22*40)+39-0
+                    sta 0xD800+(23*40)+39-0
+shift_cycletab:     lda cycletab
+                    sta cycletab_buffer
+                    ldx #0
+-                   lda cycletab+1,x
+                    sta cycletab,x
+                    inx
+                    cpx #0xE
+                    bne -
+                    rts
+cycletab:           !byte BROWN         ; 0
+                    !byte RED           ; 1
+                    !byte PURPLE        ; 2
+                    !byte ORANGE        ; 3
+                    !byte PINK          ; 4
+                    !byte LIGHT_GREY    ; 5
+                    !byte YELLOW        ; 6
+                    !byte WHITE         ; 7
+                    !byte YELLOW        ; 8
+                    !byte LIGHT_GREY    ; 9
+                    !byte PINK          ; A
+                    !byte ORANGE        ; B
+                    !byte PURPLE        ; C
+                    !byte RED           ; D
+cycletab_buffer:    !byte 0x00
+; ==============================================================================
+                    !zone ICONS
+                    ICONCOL_SPEED = 0x02
+col_icons:          lda #ICONCOL_SPEED
+                    beq +
+                    dec col_icons+1
+                    rts
++                   lda #ICONCOL_SPEED
+                    sta col_icons+1
+.mod_src:           lda .col_icon_tab + (0xFF)
+                    !for i, 17, 20 {
+                        sta 0xD800+(i*40)+36
+                        sta 0xD800+(i*40)+37
+                        sta 0xD800+(i*40)+38
+                    }
+                    inc .mod_src+1
+                    rts
+                    !align 255,0
+.col_icon_tab:      !for i, 0, 7 {
+                        !fi 23, DARK_GREY
+                        !byte DARK_GREY
+                        !byte GREY
+                        !byte LIGHT_GREY
+                        !byte YELLOW
+                        !byte WHITE
+                        !byte WHITE
+                        !byte YELLOW
+                        !byte LIGHT_GREY
+                        !byte GREY
+                    }
