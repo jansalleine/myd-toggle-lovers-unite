@@ -155,6 +155,7 @@ d018_val1           = <(((vidmem1-vicbank0)/0x400) << 4)+ <(((charset1-vicbank0)
                     !bin "gfx/petscii_bottom.bin",(12*40)
                     *= sprite_data
                     !bin "gfx/bar_sprites.bin"
+colram_data:        !bin "gfx/colramdata.bin"
 scrolltext:
                     !src "scrolltext.asm"
 ; ==============================================================================
@@ -459,71 +460,18 @@ init_vic:           lda #dd00_val0
                     sta 0xDD00
                     lda #d018_val0
                     sta 0xD018
-                    lda #YELLOW
+
                     ldx #0
--                   sta 0xD800+0x000,x
+-                   lda colram_data+0x000,x
+                    sta 0xD800+0x000,x
+                    lda colram_data+0x100,x
                     sta 0xD800+0x100,x
+                    lda colram_data+0x200,x
                     sta 0xD800+0x200,x
-                    sta 0xD800+0x2e8,x
+                    lda colram_data+0x2E8,x
+                    sta 0xD800+0x2E8,x
                     dex
                     bne -
-                    lda #BLACK
-                    ldx #39
--                   sta 0xD800+(12*40),x
-                    dex
-                    bpl -
-                    lda #CYAN
-                    sta 0xD020
-                    sta 0xD800+0x0208
-                    sta 0xD800+0x0208+39
-                    sta 0xD800+0x0208+(11*40)
-                    sta 0xD800+0x0208+(11*40)+39
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+30
-                    }
-                    lda #LIGHT_BLUE
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+28
-                    }
-                    lda #GREEN
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+29
-                    }
-                    lda #LIGHT_GREEN
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+31
-                    }
-                    lda #LIGHT_GREY
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+32
-                    }
-                    lda #PINK
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+33
-                    }
-                    lda #ORANGE
-                    !for i, 0, 11 {
-                        sta 0xD800+0x0208+(i*40)+34
-                    }
-                    lda #WHITE
-                    !for i, 0, 9 {
-                        sta 0xD800+0x0230+(i*40)
-                    }
-
-                    lda #LIGHT_GREY
-                    sta 0xD800+0x0231+(0*40)+35
-                    sta 0xD800+0x0231+(0*40)+36
-                    sta 0xD800+0x0231+(0*40)+37
-
-                    ldx #16
-                    lda #PINK
--                   sta 0xD800+0x0231+(10*40)+9,x
-                    dex
-                    bpl -
-
-                    sta 0xD800+0x0231+(1*40)+35
-                    sta 0xD800+0x0231+(1*40)+35+1
-                    sta 0xD800+0x0231+(1*40)+35+2
 
                     jsr scroller_prepare
 
@@ -1879,7 +1827,7 @@ col_icons:          lda #ICONCOL_SPEED
                     rts
                     !align 255,0
 .col_icon_tab:      !for i, 0, 7 {
-                        !fi 23, DARK_GREY
+                        !fi 23, BLACK
                         !byte DARK_GREY
                         !byte GREY
                         !byte LIGHT_GREY
