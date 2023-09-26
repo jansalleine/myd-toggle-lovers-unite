@@ -156,8 +156,7 @@ d018_val1           = <(((vidmem1-vicbank0)/0x400) << 4)+ <(((charset1-vicbank0)
                     *= sprite_data
                     !bin "gfx/bar_sprites.bin"
 colram_data:        !bin "gfx/colramdata.bin"
-scrolltext:
-                    !src "scrolltext.asm"
+scrolltext:         !src "scrolltext.asm"
 ; ==============================================================================
                     *= code_start
                     lda #0x7F
@@ -481,7 +480,6 @@ init_vic:           lda #dd00_val0
                     lda #0
                     sta vicbank0+0x3FFF
                     rts
-
 
 init_music:         lda #0
 init_addr:          jsr 0x0000
@@ -1817,7 +1815,7 @@ col_icons:          lda #ICONCOL_SPEED
                     rts
 +                   lda #ICONCOL_SPEED
                     sta col_icons+1
-.mod_src:           lda .col_icon_tab + (0xFF)
+.mod_src:           lda .col_icon_tab
                     !for i, 17, 20 {
                         sta 0xD800+(i*40)+36
                         sta 0xD800+(i*40)+37
