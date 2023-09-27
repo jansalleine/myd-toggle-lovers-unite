@@ -73,7 +73,7 @@ IRQ_LINE13          = IRQ_LINE12+15           ; char mode / sprites / music #2
 IRQ_LINE14          = 0xF9                    ; open border
 IRQ_LINE15          = 0x21                    ; sprites multiplex
 ; ==============================================================================
-                    !source "krill/loadersymbols-c64.inc"
+                    !src "krill/loadersymbols-c64.inc"
 zp_start            = 0x02
 flag_irq_ready      = zp_start
 zp_temp0            = flag_irq_ready+1
@@ -947,6 +947,7 @@ print_timer:        ldx #2
                     rts
 timer_init:         !scr "000"
 timer_current:      !scr "000"
+END_BLOCK1:
 ; ==============================================================================
                     !zone SONGSDATA
                     *= songdata
@@ -1609,6 +1610,7 @@ colorlovers:        lda #1
                     !byte 0x34, 0x32, 0x3A, 0x37, 0x31, 0x31, 0x37, 0x3A, 0x32
 .coltab_bot:        !fi 40,0x36
                     !byte 0x36, 0x32, 0x3A, 0x37, 0x31, 0x31, 0x37, 0x3A, 0x32
+END_BLOCK2:
 ; ==============================================================================
                     *= bitmap0 + 0x1100
                     !zone SCROLLER
@@ -1795,3 +1797,4 @@ col_icons:          lda #ICONCOL_SPEED
                         !byte LIGHT_GREY
                         !byte GREY
                     }
+END_BLOCK3:
