@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+$filenamePng = '../res/gfx/hires_top.png';
+$filenamePrg = '../res/gfx/hires_top.prg';
+$filenameBin = '../src/gfx/hires_top.bin';
+$filenameScr = '../src/gfx/hires_top.scr';
+
+$output = [];
+$result = 1;
+
+@exec("png2prg -o $filenamePrg $filenamePng", $output, $result);
+printf("%s\nResultcode: %d\n", implode("\n", $output), $result);
+
+$output = [];
+$result = 1;
+
+@exec("dd bs=1 skip=2 count=4160 if=$filenamePrg of=$filenameBin", $output, $result);
+printf("%s\nResultcode: %d\n", implode("\n", $output), $result);
+
+$output = [];
+$result = 1;
+
+@exec("dd bs=1 skip=8002 count=520 if=$filenamePrg of=$filenameScr", $output, $result);
+printf("%s\nResultcode: %d\n", implode("\n", $output), $result);
