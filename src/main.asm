@@ -76,12 +76,6 @@ IRQ_LINE15          = 0x21                    ; sprites multiplex
                     !src "krill/loadersymbols-c64.inc"
 zp_start            = 0x02
 flag_irq_ready      = zp_start
-zp_temp0            = flag_irq_ready+1
-zp_temp0_lo         = zp_temp0
-zp_temp0_hi         = zp_temp0+1
-zp_temp1            = zp_temp0_hi+1
-zp_temp1_lo         = zp_temp1
-zp_temp1_hi         = zp_temp1+1
 flag_irq_top        = 0xFB
 ; ==============================================================================
 KEY_CRSRUP          = 0x91
@@ -363,6 +357,7 @@ enable_song_fade:   bit song_fadeout
                     jsr print_timer
                     jsr colorletters
                     jsr colorlovers
+enable_joyget:      bit joy_get
                     +flag_set flag_irq_ready
                     jmp irq_end
 
@@ -499,6 +494,7 @@ enable_print_win:   bit print_window
 ; ==============================================================================
 load_song:          lda #DISABLE
                     sta enable_timer
+                    sta enable_joyget
                     sta enable_check_end
                     sta enable_song_end
                     sta enable_song_fade
@@ -568,6 +564,7 @@ load_song:          lda #DISABLE
                     sta enable_cursor_anim
                     sta enable_keyboard
                     sta enable_print_win
+                    sta enable_joyget
                     lda #DISABLE
                     sta enable_loadbar
                     jsr reset_loadbar
@@ -633,8 +630,8 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     bne +
                     jmp .key_exit ; pause
 +
-.key_exit:          !if DEBUG=1 { inc 0xD020 }
-                    rts
+.key_exit:          rts
+input_up:
 .crsr_up:           lda cursorpos
                     beq +
                     jsr cursor_delete
@@ -648,6 +645,7 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     lda #ENABLE
                     sta enable_print_win
                     rts
+input_down:
 .crsr_down:         lda songselected
                     cmp #38
                     bne +
@@ -667,7 +665,7 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     lda #ENABLE
                     sta enable_print_win
                     rts
-
+input_right:
 .crsr_right:        lda songselected
                     cmp #30
                     bcs ++
@@ -685,7 +683,7 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     lda #ENABLE
                     sta enable_print_win
 ++                  rts
-
+input_left:
 .crsr_left:         lda songselected
                     cmp #10
                     bcc +
@@ -700,7 +698,7 @@ keyboard_get:       !if DEBUG=1 { dec 0xD020 }
                     lda #ENABLE
                     sta enable_print_win
 +                   rts
-
+input_return:
 .return:            lda songselected
                     sta songtoload
                     sta songplaying
@@ -948,6 +946,70 @@ print_timer:        ldx #2
                     rts
 timer_init:         !scr "000"
 timer_current:      !scr "000"
+; ==============================================================================
+                    !zone JOYSTICK
+joy_get:            lda 0xDC00
+                    lsr
+                    ror .up
+                    lsr
+                    ror .down
+                    lsr
+                    ror .left
+                    lsr
+                    ror .right
+                    lsr
+                    ror .fire
+
+                    bit .up
+                    bmi +
+                    bvc +
+                    jmp input_up
++                   bit .down
+                    bmi +
+                    bvc +
+                    jmp input_down
++                   bit .fire
+                    bmi +
+                    bvc +
+                    jmp input_return
++                   bit .left
+                    bmi +
+                    bvc +
+                    jmp input_left
++                   bit .right
+                    bmi +
+                    bvc +
+                    jmp input_right
++
+                    lda .down
+                    bne +
+                    dec .downhold
+                    lda .downhold
+                    bne +
+                    lda #0x08
+                    sta .downhold
+                    lda #%01111111
+                    sta .down
+                    jmp input_down
++                   lda .up
+                    bne +
+                    dec .uphold
+                    lda .uphold
+                    bne +
+                    lda #0x08
+                    sta .uphold
+                    lda #%01111111
+                    sta .up
+                    jmp input_up
++                   rts
+
+.up:                !byte 0x00
+.down:              !byte 0x00
+.left:              !byte 0x00
+.right:             !byte 0x00
+.fire:              !byte 0x00
+.downhold:          !byte 0x08
+.uphold:            !byte 0x08
 END_BLOCK1:
 ; ==============================================================================
                     !zone SONGSDATA
