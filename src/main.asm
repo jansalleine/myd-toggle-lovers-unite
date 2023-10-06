@@ -99,6 +99,7 @@ songdata            = 0x3300
 vicbank0            = 0x4000
 charset0            = vicbank0+0x0000
 charset1            = vicbank0+0x2800
+charsetRom          = 0xD800
 vidmem0             = vicbank0+0x2000
 vidmem1             = vicbank0+0x2400
 data_start          = 0x1000
@@ -1647,7 +1648,7 @@ scroller:           lda #0
 .fill_buf:          clc
                     cmp #0x40
                     bcc +
-                    ldy #(>charset1+0x200)
+                    ldy #(>charsetRom+0x200)
                     sty .char_point+2
                     sec
                     sbc #0x40
@@ -1659,14 +1660,18 @@ scroller:           lda #0
                     bcc +
                     inc .char_point+2
 +                   ldx #0x07
-.char_point:        lda charset1,x
+                    lda #0x33
+                    sta 0x01
+.char_point:        lda charsetRom,x
                     sta .scrollchar,x
                     dex
                     bpl .char_point
+                    lda #MEMCFG
+                    sta 0x01
 
-                    lda #(<charset1)
+                    lda #(<charsetRom)
                     sta .char_point+1
-                    lda #(>charset1)
+                    lda #(>charsetRom)
                     sta .char_point+2
 
                     lda .scrollchar

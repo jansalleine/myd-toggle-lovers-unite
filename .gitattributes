@@ -1,0 +1,3 @@
+*.bin diff=bin
+*.chr diff=bin
+*.scr diff=bin
