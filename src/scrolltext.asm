@@ -1,4 +1,11 @@
 !scr "In the name of MAYDAY! "
 !scr "Shine and Spider present: ", 0x22, "Toggle - Lovers Unite!", 0x22, " "
-!scr "A collection of all Toggle tunes at the time of the release of HVSC #78."
+!scr "A collection of all Toggle tunes at the time of the release of HVSC #78. "
+!scr "This is a little birthday present by us to you Toggle. May you live long "
+!scr "and prosper <3 "
+!scr "Controls: CRSR/JOY#2 UP/DOWN - Song UP/DOWN, CRSR/JOY#2 RIGHT - Page DOWN"
+!scr ", CRSR/JOY#2 LEFT - Page UP, JOY#2 FIRE/RETURN - Select. "
+!scr "Of course everything will autoplay as you should know from my other "
+!scr "music collections by now. Everyone please enjoy this great SID musicians "
+!scr "work. Love, Peace & Empathy! Spider over and out - - - loop - - -"
 !byte 0xFF
